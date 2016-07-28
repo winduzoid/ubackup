@@ -2,7 +2,8 @@
 
 Backup system based on rsync and ZFS
 
-It uses rsync for synchronization and zfs filesystem for snapshoting
+It uses rsync for synchronization and zfs filesystem for snapshoting.
+A feature of the application is that it actually makes clones of hosts.
 
 ## Requirements
 
