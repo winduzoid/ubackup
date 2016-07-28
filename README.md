@@ -29,6 +29,6 @@ File contains hosts backup rules, one host on the line. Each host consists of fo
 Parameters:
 
 * host address. May be in FQDN form, or just ip address
-* destination path. If path ending with slash than destination path will looks like **dir**. If path not ending with slash, than destination path will looks like **dir/hostname**
+* relative destination path. If path ending with slash than destination path will looks like **dir**. If path not ending with slash, than destination path will looks like **dir/hostname**
 * host alias. If omitted, than the host name will be taken from the host address (first parameter)
 * source dir. By default is "/", than copying all filesystem of source host.
