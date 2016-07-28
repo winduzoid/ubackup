@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mkdir -p /root/system_state
+df -h > /root/system_state/df.txt
+cat /proc/mounts > /root/system_state/mounts.txt
+dpkg -l > /root/system_state/packages.txt
+lvscan > /root/system_state/lvscan.txt 2>/dev/null
+ifconfig > /root/system_state/ifconfig.txt 2>/dev/null

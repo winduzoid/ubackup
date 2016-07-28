@@ -1,0 +1,7 @@
+30 6 * * * root /usr/local/bin/ubackup.sh > /data/backup/LOG/ubackup.log
+
+15 23 * * * root /usr/local/bin/ubackup_snapshot.sh daily
+20 23 * * 0 root /usr/local/bin/ubackup_snapshot.sh weekly
+25 23 1 * * root /usr/local/bin/ubackup_snapshot.sh monthly
+
+30 23 * * * root /usr/local/bin/ubackup_delete_old_snapshot.sh

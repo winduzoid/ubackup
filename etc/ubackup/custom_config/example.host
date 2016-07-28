@@ -1,0 +1,2 @@
+[default]
+RSYNC_SHORT_OPTS = -aHv

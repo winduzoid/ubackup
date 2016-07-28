@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Run after"
+echo "Run after" > /tmp/run_after.log
+
+
