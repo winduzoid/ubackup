@@ -11,25 +11,37 @@ debug = None
 # processing the command line arguments
 arg = readargs()
 if debug:
-    print "Аргументы: %s" % arg
+    print "Command line arguments: %s" % arg
 
 # reading the configuration
 if not arg.install_config:
-    conf = ItemConfig(ReadConf(arg.conf))
+    conf = ItemConfig(ReadConf(arg.conf, debug))
 
 # installing the new configuration
 installConfig(arg)
+
 # show snapshot list
 snapshotList(arg)
+
 if arg.d:
     print "\nDRY RUN MODE!"
-# removing snapshot
-snapshotRm(arg)
+
 # showing configuration
-showConfig(conf,arg)
+if arg.s:
+    showConfig(conf,arg)
+
+# removing snapshot
+if arg.snapshot_rm:
+    snapshotRm(arg)
+
 # launching backup process
-runBackup(conf, arg)
+if not arg.n:
+    runBackup(conf, arg)
+
 # creating snapshot
-createSnapshot(conf, arg, debug)
+if arg.snapshot:
+    createSnapshot(conf, arg, debug)
+
 # rotating snapshots
-rotateSnapshot(conf, arg)
+if arg.snapshot_rotate:
+    rotateSnapshot(conf, arg)

@@ -8,8 +8,6 @@ import sys
 
 def createSnapshot(conf, arg, debug = None):
 #    print mydate + "\n"
-    if not arg.snapshot:
-        return
     print "\nCreating snapshot\n"
     snapshot_prefix = conf.conf["snapshot_prefix"] + "_" + arg.snapshot + "_"
 
@@ -35,8 +33,6 @@ def delSnap(SnapshotName):
 
 # creating snapshot names for deletion
 def rotateSnapshot(conf, arg):
-    if not arg.snapshot_rotate:
-        return
     print "\nRotating snapshots"
     # get pool list
     volumes = os.popen("/sbin/zfs list | grep -v NAME | egrep '^" + conf.conf["zpool"] + "' | awk '{print $1}'")
@@ -68,8 +64,6 @@ def snapshotList(arg):
     sys.exit(0)
 
 def snapshotRm(arg):
-    if not arg.snapshot_rm:
-        return
     for i in arg.snapshot_rm:
         if re.match('.*@.*', i):
             print "Removing snapshot: %s" % i

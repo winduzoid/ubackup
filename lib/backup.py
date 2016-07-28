@@ -65,8 +65,6 @@ def launchRemote(host, filename, log_filename, conf):
 def runBackup(conf, arg):
     misc = Misc(conf)
     # if specified "-n", exit
-    if arg.n:
-        return
     print "\nBackuping hosts\n"
     hosts = getHosts(conf)
     # if not dry run mode

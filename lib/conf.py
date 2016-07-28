@@ -12,7 +12,7 @@ from ConfigParser import SafeConfigParser
 # Simple class for reading configuration
 class ReadConf:
 
-    def __init__(self, configFilePath):
+    def __init__(self, configFilePath, debug):
         self.cp = SafeConfigParser()
         self.section = "default"
         #if os.path.isfile
@@ -26,7 +26,8 @@ class ReadConf:
             conffile = "/usr/local/etc/ubackup/ubackup.conf"
         elif os.path.isfile("/etc/ubackup/ubackup.conf"):
             conffile = "/etc/ubackup/ubackup.conf"
-#        print "configpath: %s" % conffile
+        if debug:
+            print "configpath: %s" % conffile
         self.cp.read(conffile)
 
     def items(self,section=None):
@@ -104,8 +105,6 @@ class ItemConfig:
                 self.conf[i] = stsl(dconf[i])
 
 def showConfig(conf,arg):
-    if not arg.s:
-        return
     for i in sorted(conf.conf):
         print "%s = %s" % (i, conf.conf[i])
 
