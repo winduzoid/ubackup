@@ -6,10 +6,19 @@ from lib.conf import *
 from lib.backup import *
 from lib.snapshot import *
 
-debug = None
-
 # processing command line arguments
 arg = readargs()
+
+if arg.version:
+    print "ubackup v0.2.1"
+    sys.exit(0)
+
+# if option "verbose" is switched on, than switching on flag "debug"
+if arg.v:
+    debug = True
+else:
+    debug = None
+
 if debug:
     print "Command line arguments: %s" % arg
 
@@ -36,7 +45,7 @@ if arg.snapshot_rm:
 
 # launching backup process
 if not arg.n:
-    runBackup(conf, arg)
+    runBackup(conf, arg, debug)
 
 # creating snapshot
 if arg.snapshot:
