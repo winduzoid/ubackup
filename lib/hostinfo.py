@@ -1,6 +1,7 @@
 # coding: utf8
 
 import os
+import re
 import subprocess
 import time
 
@@ -21,20 +22,24 @@ class HostConf:
             self.conf["hostname"] = None
 
         try:
-            self.conf["path"] = hostsplit[2]
+            self.conf["path"] = hostsplit[3]
         except IndexError:
             self.conf["path"] = None
 
         try:
-            self.conf["dst"] = hostsplit[1]
-        except IndexError:
-            self.conf["dst"] = None
-
-        try:
-            self.conf["alias"] = hostsplit[3].lower()
+            self.conf["alias"] = hostsplit[2].lower()
             self.conf["name"] = self.conf["alias"]
         except IndexError:
             self.conf["alias"] = None
+
+        try:
+            dst_path = hostsplit[1]
+            if re.match(".*/$", dst_path):
+                self.conf["dst"] = dst_path
+            else:
+                self.conf["dst"] = dst_path + "/" + self.conf["name"]
+        except IndexError:
+            self.conf["dst"] = None
 
 def fillHostInfo(hostconf, conf):
 
