@@ -10,7 +10,7 @@ from lib.conf import *
 # Host object
 class HostConf:
 
-    def __init__(self,host_line):
+    def __init__(self,host_line, debug = None):
 
         hostsplit = host_line.split()
         self.conf = {}
@@ -34,12 +34,17 @@ class HostConf:
 
         try:
             dst_path = hostsplit[1]
-            if re.match(".*/$", dst_path):
+            if dst_path == "/":
+                self.conf["dst"] = None
+            elif re.match(".*/$", dst_path):
                 self.conf["dst"] = dst_path
             else:
                 self.conf["dst"] = dst_path + "/" + self.conf["name"]
         except IndexError:
             self.conf["dst"] = None
+
+        if debug:
+            print "destination path = %s" % self.conf["dst"]
 
 def fillHostInfo(hostconf, conf):
 

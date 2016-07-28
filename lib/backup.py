@@ -31,14 +31,14 @@ def gatherHostInfo(host, rcode=None):
         str = ssh_string + "echo %d > /var/log/backup_status.log" % rcode
         subprocess.call(str.split())
 
-def getHosts(conf):
+def getHosts(conf, debug = None):
     hosts = []
     # get host list
     hosts_lines = os.popen("cat " + conf.conf["file_hosts"] + " | egrep -v '^\s*#' | egrep -v '^$'")
     
     # init host objects
     for i in hosts_lines:
-        hosts.append(fillHostInfo(HostConf(i), conf))
+        hosts.append(fillHostInfo(HostConf(i, debug), conf))
     return hosts
 
 def launchRemote(host, filename, log_filename, conf):
@@ -62,11 +62,11 @@ def launchRemote(host, filename, log_filename, conf):
     logfile.write("Done\n")
     logfile.close()
 
-def runBackup(conf, arg):
+def runBackup(conf, arg, debug = None):
     misc = Misc(conf)
     # if specified "-n", exit
     print "\nBackuping hosts\n"
-    hosts = getHosts(conf)
+    hosts = getHosts(conf, debug)
     # if not dry run mode
     if not arg.d:
         # get exclusive lock
@@ -136,6 +136,7 @@ def runBackup(conf, arg):
 
                 logfile = open(log_filename, "a+")
                 print(misc.md + "Backuping host... ")
+                subprocess.call("mkdir -p " + host.conf["dst"], shell = True)
                 rcode = subprocess.call(str.split(), stdout=logfile, stderr=logfile)
                 logfile.close()
 
