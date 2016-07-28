@@ -21,7 +21,7 @@ class HostConf:
             self.conf["hostname"] = None
 
         try:
-            self.conf["path"] = hostsplit[2]
+            self.conf["path"] = hostsplit[3]
         except IndexError:
             self.conf["path"] = None
 
@@ -31,7 +31,7 @@ class HostConf:
             self.conf["dst"] = None
 
         try:
-            self.conf["alias"] = hostsplit[3].lower()
+            self.conf["alias"] = hostsplit[2].lower()
             self.conf["name"] = self.conf["alias"]
         except IndexError:
             self.conf["alias"] = None
