@@ -33,25 +33,25 @@ def delSnap(SnapshotName):
     str = "/sbin/zfs destroy " + SnapshotName
     subprocess.call(str.split())
 
-# Формируем имена снапшотов для удаления
+# creating snapshot names for deletion
 def rotateSnapshot(conf, arg):
     if not arg.snapshot_rotate:
         return
     print "\nRotating snapshots"
-    # берем список томов
+    # get pool list
     volumes = os.popen("/sbin/zfs list | grep -v NAME | egrep '^" + conf.conf["zpool"] + "' | awk '{print $1}'")
-    # проходим по списку томов
+    # loop on pool list
     for volume in volumes:
         volume = volume.strip("\n")
-        # берем подмонтированный каталог для текущего тома
+        # get mount point for the current volume
         dir_volume = subprocess.check_output("/sbin/zfs list " + volume + " | grep -v NAME | awk '{print $5}'", shell=True).strip("\n")
-        # берем отсортированный список снапшотов для текущего тома
+        # get sorted snapshot list for the current volume
         snaplist = sorted(os.listdir(dir_volume + "/.zfs/snapshot"), reverse=True)
-        # проходимся по сконфигурированному списку типов снапшотов
+        # loop on snapshot type list
         for i in conf.snapshot_names:
-            # берем список снапшотов для данного типа
+            # get snapshot list for current type
             fsnaplist = filter(lambda x:re.search(r'^' + conf.conf["snapshot_prefix"] + "_" +  i[0], x), snaplist)
-            # проходимся по этому списку
+            # loop on this list
             for j in fsnaplist:
                 ee = int(i[1])
                 if j not in fsnaplist[0:ee]:

@@ -9,7 +9,7 @@ from lib.misc import *
 
 from ConfigParser import SafeConfigParser
 
-# Класс для упрощения чтения конфигурации
+# Simple class for reading configuration
 class ReadConf:
 
     def __init__(self, configFilePath):
@@ -37,7 +37,7 @@ class ReadConf:
         if section == None: section = self.section
         return self.cp.get(section,keyname)
 
-# Класс с конфигурацией
+# Object with config
 class ItemConfig:
 
     def __init__(self,readConf, section = "default"):
@@ -52,7 +52,7 @@ class ItemConfig:
             print "Problem with config"
             sys.exit(1)
 
-        # инициируем недостающие конфигурационные переменные
+        # Init absent configuration options
         self.fillMissingConf()
 
         try:

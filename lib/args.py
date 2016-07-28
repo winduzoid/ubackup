@@ -7,7 +7,6 @@ def readargs():
     parser = argparse.ArgumentParser(description='Ubackup tool is backuping servers through rsync protocol')
     parser.add_argument('host', nargs='*', help='Proceeds custom set of hosts. If omitted, than will backup all set')
     parser.add_argument('-c', '--conf', metavar = 'configfile', help = 'Alternate configuration file. Default is ' + os.path.expanduser('~root') + '/.ubackup/ubackup.conf, /usr/local/etc/ubackup/ubackup.conf, or /etc/ubackup/ubackup.conf')
-#    parser.add_argument('-i', metavar = 'private_key', help = 'Alternate identity key file. Default is /root/.ssh/id_rsa')
     parser.add_argument('-r', action='store_const', const=True, help = 'Exclude mode. If set, hosts will be excluded from backup')
     parser.add_argument('-n', action='store_const', const=True, help = 'Do not exec backup process. For example, if you want to make other operations')
     parser.add_argument('-d', action='store_const', const=True, help = 'Dry run mode. Backup will not be produced. Local known_hosts file will be updated')

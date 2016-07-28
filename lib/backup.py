@@ -33,10 +33,10 @@ def gatherHostInfo(host, rcode=None):
 
 def getHosts(conf):
     hosts = []
-    # берем список хостов
+    # get host list
     hosts_lines = os.popen("cat " + conf.conf["file_hosts"] + " | egrep -v '^\s*#' | egrep -v '^$'")
     
-    # инициируем объекты - хосты
+    # init host objects
     for i in hosts_lines:
         hosts.append(fillHostInfo(HostConf(i), conf))
     return hosts
@@ -64,14 +64,14 @@ def launchRemote(host, filename, log_filename, conf):
 
 def runBackup(conf, arg):
     misc = Misc(conf)
-    # если указана опция "-n", выходим
+    # if specified "-n", exit
     if arg.n:
         return
     print "\nBackuping hosts\n"
     hosts = getHosts(conf)
-    # если не выставлен режим dry run
+    # if not dry run mode
     if not arg.d:
-        # ставим эксклюзивную блокировку
+        # get exclusive lock
         fd = open(conf.conf["file_lock"], "w")
         fcntl.lockf(fd, fcntl.LOCK_EX)
 
@@ -84,11 +84,11 @@ def runBackup(conf, arg):
         subprocess.call(command.split())
 
     for host in hosts:
-        # если указан флаг exclude, и есть список хостов, и текущий хост в списке, то его не бэкапим
+        # if specified exclude flag, and we have host list, and current host is in this list, do not backup it
         if arg.r and len(arg.host) > 0 and host.conf["name"] in [x.lower() for x in arg.host]:
             #print "Skipping host %s..." % host.conf["name"]
             continue
-        # если не указан флаг exclude, и есть список хостов, и текущий хост не в списке, то его не бэкапим
+        # if not specified exclude flag, and we have host list, and current host is not in list, do not backup it
         if not arg.r and len(arg.host) > 0 and host.conf["name"] not in [x.lower() for x in arg.host]:
             #print "Skipping host %s..." % host.conf["name"]
             continue
@@ -124,7 +124,7 @@ def runBackup(conf, arg):
             print "Destination dir: " + host.conf["dst"]
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + str + "\n"
-            # Если не выставлен флаг "dry run"
+            # If not in "dry run" mode
             if not arg.d:
                 #gatherHostInfo(host)
                 log_filename = conf.conf["dir_log"] + "/" + host.conf["name"]
@@ -153,8 +153,8 @@ def runBackup(conf, arg):
             print "\nKeyboard interrupted"
             sys.exit(1)
 
-    # если не выставлен режим dry run
+    # If not in "dry run" mode
     if not arg.d:
-        # снимаем блокировку
+        # unlocking file
         fcntl.lockf(fd, fcntl.LOCK_UN)
         fd.close()
