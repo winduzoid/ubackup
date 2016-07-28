@@ -25,7 +25,7 @@ Section in the filling state
 
 ### hosts.conf
 
-File contains hosts backup rules, one host on the line. Each host consists of four parameters delimetered by space symbol. First parameter (host address) is necessary, and thre other is not.
+File contains hosts backup rules, one host on the line. Each host consists of four parameters delimetered by space symbol. First parameter (host address) is necessary, and three other is not.
 Parameters:
 
 * host address. May be in FQDN form, or just ip address
