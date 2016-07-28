@@ -16,7 +16,7 @@ The app has been tested on Ubuntu 14.04, but it should work on any Linux distro 
 
 ## Installation
 
-Clone to any directory and run *ubackup --install-config*. By default config files will be installed to $HOME/.ubackup.
+Clone or download to any directory and run *ubackup --install-config*. By default config files will be installed to $HOME/.ubackup.
 You can install files to another location by specified path in the --install-config option.
 
 ## Configuration
