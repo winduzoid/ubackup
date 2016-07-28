@@ -6,7 +6,7 @@ import time
 
 from lib.conf import *
 
-# класс с конфигурацией хоста
+# Host object
 class HostConf:
 
     def __init__(self,host_line):

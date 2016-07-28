@@ -11,7 +11,7 @@ class Misc:
     def logDate(self, logfile):
         logfile.write(self.md)
 
-# удаляем лишние слэши
+# removing redundant slashes
 def stsl(str):
     return re.sub('/+','/',str)
 

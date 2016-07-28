@@ -9,10 +9,10 @@ from lib.misc import *
 
 from ConfigParser import SafeConfigParser
 
-# Класс для упрощения чтения конфигурации
+# Simple class for reading configuration
 class ReadConf:
 
-    def __init__(self, configFilePath):
+    def __init__(self, configFilePath, debug):
         self.cp = SafeConfigParser()
         self.section = "default"
         #if os.path.isfile
@@ -26,7 +26,8 @@ class ReadConf:
             conffile = "/usr/local/etc/ubackup/ubackup.conf"
         elif os.path.isfile("/etc/ubackup/ubackup.conf"):
             conffile = "/etc/ubackup/ubackup.conf"
-#        print "configpath: %s" % conffile
+        if debug:
+            print "configpath: %s" % conffile
         self.cp.read(conffile)
 
     def items(self,section=None):
@@ -37,7 +38,7 @@ class ReadConf:
         if section == None: section = self.section
         return self.cp.get(section,keyname)
 
-# Класс с конфигурацией
+# Object with config
 class ItemConfig:
 
     def __init__(self,readConf, section = "default"):
@@ -52,7 +53,7 @@ class ItemConfig:
             print "Problem with config"
             sys.exit(1)
 
-        # инициируем недостающие конфигурационные переменные
+        # Init absent configuration options
         self.fillMissingConf()
 
         try:
@@ -104,8 +105,6 @@ class ItemConfig:
                 self.conf[i] = stsl(dconf[i])
 
 def showConfig(conf,arg):
-    if not arg.s:
-        return
     for i in sorted(conf.conf):
         print "%s = %s" % (i, conf.conf[i])
 

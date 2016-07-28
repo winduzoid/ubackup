@@ -8,28 +8,40 @@ from lib.snapshot import *
 
 debug = None
 
-# обрабатываем аргументы командной строки
+# processing the command line arguments
 arg = readargs()
 if debug:
-    print "Аргументы: %s" % arg
+    print "Command line arguments: %s" % arg
 
-# читаем конфигурацию
+# reading the configuration
 if not arg.install_config:
-    conf = ItemConfig(ReadConf(arg.conf))
+    conf = ItemConfig(ReadConf(arg.conf, debug))
 
-# Инсталлируем новую конфигурацию
+# installing the new configuration
 installConfig(arg)
-# выводим список снапшотов
+
+# show snapshot list
 snapshotList(arg)
+
 if arg.d:
     print "\nDRY RUN MODE!"
-# Удаляем снапшот
-snapshotRm(arg)
-# выводим конфигурацию
-showConfig(conf,arg)
-# запускаем процесс бэкапа
-runBackup(conf, arg)
-# создаем снапшот
-createSnapshot(conf, arg, debug)
-# удаляем старые снапшоты
-rotateSnapshot(conf, arg)
+
+# showing configuration
+if arg.s:
+    showConfig(conf,arg)
+
+# removing snapshot
+if arg.snapshot_rm:
+    snapshotRm(arg)
+
+# launching backup process
+if not arg.n:
+    runBackup(conf, arg)
+
+# creating snapshot
+if arg.snapshot:
+    createSnapshot(conf, arg, debug)
+
+# rotating snapshots
+if arg.snapshot_rotate:
+    rotateSnapshot(conf, arg)
