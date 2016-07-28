@@ -40,8 +40,6 @@ class HostConf:
                 self.conf["dst"] = dst_path + "/" + self.conf["name"]
         except IndexError:
             self.conf["dst"] = None
-        print self.conf["dst"]
-
 
 def fillHostInfo(hostconf, conf):
 
