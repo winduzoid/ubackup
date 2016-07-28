@@ -10,7 +10,7 @@ from lib.snapshot import *
 arg = readargs()
 
 if arg.version:
-    print "ubackup v0.2.1"
+    print "ubackup v0.2.2"
     sys.exit(0)
 
 # if option "verbose" is switched on, than switching on flag "debug"
