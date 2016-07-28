@@ -8,12 +8,12 @@ from lib.snapshot import *
 
 debug = None
 
-# processing the command line arguments
+# processing command line arguments
 arg = readargs()
 if debug:
     print "Command line arguments: %s" % arg
 
-# reading the configuration
+# reading configuration
 if not arg.install_config:
     conf = ItemConfig(ReadConf(arg.conf, debug))
 
