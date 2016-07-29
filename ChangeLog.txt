@@ -1,0 +1,3 @@
+SOON RELEASE
+
+* By default ubackup writes log file to destination dir specified in hosts.conf. #4

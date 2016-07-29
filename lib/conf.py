@@ -81,7 +81,12 @@ class ItemConfig:
         except KeyError:
             dconf["dir_backup"] = "/data/backup/"
 
-        dconf["dir_log"] = dconf["dir_backup"] + "/LOG"
+        try:
+            dconf["dir_log_name"] = self.conf["dir_log_name"]
+        except KeyError:
+             dconf["dir_log_name"] = "LOG"
+
+        dconf["dir_log"] = dconf["dir_backup"] + "/" + dconf["dir_log_name"]
         dconf["file_lock"] = "/tmp/ubackup.lock"
         dconf["file_hosts"] = dconf["dir_etc"] + "/hosts.conf"
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"
