@@ -95,7 +95,7 @@ def fillHostInfo(hostconf, conf, debug = None):
     elif os.path.isfile(conf.conf["dir_run_before"] + "/default"):
         hostconf.conf["run_before"] = conf.conf["dir_run_before"] + "/default"
     else:
-        hostconf.conf["run_before"] = Non
+        hostconf.conf["run_before"] = None
 
     # run after
     if os.path.isfile(conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]):
