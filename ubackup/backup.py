@@ -9,7 +9,7 @@ import fcntl
 from ubackup.hostinfo import *
 from ubackup.misc import *
 
-def gatherHostInfo(host, rcode=None):
+def gatherHostInfo(host, conf, rcode=None, file_log_rcode = None):
 
     dir_systeminfo = "/root/system_state"
     hostname = host.conf["hostname"]
@@ -28,7 +28,7 @@ def gatherHostInfo(host, rcode=None):
         str = ssh_string + "ifconfig > /root/system_state/ifconfig.txt 2>/dev/null"
         subprocess.call(str.split())
     else:
-        str = ssh_string + "echo %d > /var/log/backup_status.log" % rcode
+        str = ssh_string + "echo %d > %s" % (rcode, file_log_rcode)
         subprocess.call(str.split())
 
 def getHosts(conf, debug = None):
@@ -89,7 +89,7 @@ def runBackup(conf, arg, debug = None):
                     print "Skipping host %s..." % host.conf["name"]
                 continue
             # if specified exclude flag, and we have host list by path, and current host is in this list, do not backup it
-            if len(arg.path) > 0 and host.conf["dstpath"] in [x.lower() for x in arg.path]:
+            if arg.path and host.conf["dstpath"] in [x.lower() for x in arg.path]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                     print "Host dest path is %s" % host.conf["dstpath"]
@@ -101,7 +101,7 @@ def runBackup(conf, arg, debug = None):
                     print "Skipping host %s..." % host.conf["name"]
                 continue
             # if not specified exclude flag, and we have host list by path, and current host is not in list, do not backup it
-            if len(arg.path) > 0 and host.conf["dstpath"] not in [x.lower() for x in arg.path]:
+            if arg.path and host.conf["dstpath"] not in [x.lower() for x in arg.path]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                     print "Host dest path is %s" % host.conf["dstpath"]
@@ -117,6 +117,11 @@ def runBackup(conf, arg, debug = None):
             rsync_long_opts = host.conf["rsync_long_opts"]
         except KeyError:
             rsync_long_opts = conf.conf["rsync_long_opts"]
+
+        try:
+            file_log_rcode = host.conf["file_log_rcode"]
+        except KeyError:
+            file_log_rcode = conf.conf["file_log_rcode"]
 
         try:
             str = "egrep -q '^" + host.conf["hostname"] + "\s+.*' /root/.ssh/known_hosts || ssh-keyscan " + host.conf["hostname"] + " >> /root/.ssh/known_hosts"
@@ -136,6 +141,7 @@ def runBackup(conf, arg, debug = None):
 
             print "Destination dir: " + host.conf["dst"]
             print "Log file: " + host.conf["dir_log"] + "/" + host.conf["name"]
+            print "Log file rcode: " + file_log_rcode
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + str + "\n"
             # If not in "dry run" mode
@@ -158,7 +164,7 @@ def runBackup(conf, arg, debug = None):
                 rcode = subprocess.call(str.split(), stdout=logfile, stderr=logfile)
                 logfile.close()
 
-                gatherHostInfo(host, rcode)
+                gatherHostInfo(host, conf, rcode, file_log_rcode)
                 print(misc.md + "Done. Exit code: %d" % rcode)
                 logfile = open(log_filename, "a+")
                 logfile.write("Exit code: %d\n" % rcode)
