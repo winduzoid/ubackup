@@ -54,6 +54,9 @@ class HostConf:
 
 def fillHostInfo(hostconf, conf, debug = None):
 
+    if debug:
+        print hostconf.conf
+
     # exclude list
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
 
@@ -67,7 +70,7 @@ def fillHostInfo(hostconf, conf, debug = None):
 
     if os.path.isfile(custom_config):
         crc = ReadConf(custom_config)
-        cconf = ItemConfig(crc)
+        cconf = ItemConfig(crc, "custom")
         hostconf.conf.update(cconf.conf)
 
     # destination dir
@@ -106,6 +109,9 @@ def fillHostInfo(hostconf, conf, debug = None):
         hostconf.conf["run_after"] = conf.conf["dir_run_after"] + "/default"
     else:
         hostconf.conf["run_after"] = None
+
+    if debug:
+        print hostconf.conf
 
     return hostconf
 
