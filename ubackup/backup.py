@@ -82,15 +82,30 @@ def runBackup(conf, arg, debug = None):
         subprocess.call(command.split())
 
     for host in hosts:
-        # if specified exclude flag, and we have host list, and current host is in this list, do not backup it
-        if arg.r and len(arg.host) > 0 and host.conf["name"] in [x.lower() for x in arg.host]:
-            #print "Skipping host %s..." % host.conf["name"]
-            continue
-        # if not specified exclude flag, and we have host list, and current host is not in list, do not backup it
-        if not arg.r and len(arg.host) > 0 and host.conf["name"] not in [x.lower() for x in arg.host]:
-            #print "Skipping host %s..." % host.conf["name"]
-            continue
-
+        if arg.r:
+            # if specified exclude flag, and we have host list, and current host is in this list, do not backup it
+            if len(arg.host) > 0 and host.conf["name"] in [x.lower() for x in arg.host]:
+                if debug:
+                    print "Skipping host %s..." % host.conf["name"]
+                continue
+            # if specified exclude flag, and we have host list by path, and current host is in this list, do not backup it
+            if len(arg.path) > 0 and host.conf["dstpath"] in [x.lower() for x in arg.path]:
+                if debug:
+                    print "Skipping host %s..." % host.conf["name"]
+                    print "Host dest path is %s" % host.conf["dstpath"]
+                continue
+        if not arg.r:
+            # if not specified exclude flag, and we have host list, and current host is not in list, do not backup it
+            if len(arg.host) > 0 and host.conf["name"] not in [x.lower() for x in arg.host]:
+                if debug:
+                    print "Skipping host %s..." % host.conf["name"]
+                continue
+            # if not specified exclude flag, and we have host list by path, and current host is not in list, do not backup it
+            if len(arg.path) > 0 and host.conf["dstpath"] not in [x.lower() for x in arg.path]:
+                if debug:
+                    print "Skipping host %s..." % host.conf["name"]
+                    print "Host dest path is %s" % host.conf["dstpath"]
+                continue
         # print "Backuping host %s...\n" % host.conf["name"]
 
         try:
