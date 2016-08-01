@@ -1,3 +1,7 @@
+Developing:
+
+* #6: Added a configuration option for log file name on host with exit backup code
+
 v0.5.0:
 
 * #1: Implemented ability to choose host list by destination path at the command line
