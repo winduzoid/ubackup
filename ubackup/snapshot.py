@@ -11,21 +11,30 @@ def createSnapshot(conf, arg, debug = None):
     print "\nCreating snapshot\n"
     snapshot_prefix = conf.conf["snapshot_prefix"] + "_" + arg.snapshot + "_"
 
-    volumes = os.popen("/sbin/zfs list | grep -v NAME | egrep '^" + conf.conf["zpool"] + "' | awk '{print $1}'")
+    volumes_list = []
+    for i in os.popen("/sbin/zfs list | grep -v NAME | egrep '^" + conf.conf["zpool"] + "' | awk '{print $1}'"):
+        volumes_list.append(i.strip("\n"))
+
+    if not arg.snapshot_volume:
+        volumes = volumes_list
+    else:
+        volumes = arg.snapshot_volume
     #volumes = subprocess.check_output("/sbin/zfs list | grep -v NAME | egrep '^" + conf.conf["zpool"] + "' | awk '{print $1}'")
     for volume in volumes:
         volume = volume.strip("\n")
         if volume in [x.strip() for x in conf.conf["snapshot_disable"].split(',')]:
-            if debug:
-                print "Snapshot of volume %s is disabled" % volume
+            print "Snapshot of volume %s is disabled in configuration" % volume
             continue
         snaptime = time.strftime("%Y-%m-%d-%H:%M:%S")
-        if not arg.d:
-            print "Creating snapshot: " + volume + "@" + snapshot_prefix + snaptime
-            str = "/sbin/zfs snapshot " + volume + "@" + snapshot_prefix + snaptime
-            subprocess.call(str.split())
+        if volume in volumes_list:
+            if not arg.d:
+                print "Creating snapshot: " + volume + "@" + snapshot_prefix + snaptime
+                str = "/sbin/zfs snapshot " + volume + "@" + snapshot_prefix + snaptime
+                subprocess.call(str.split())
+            else:
+                print "Would create snapshot: " + volume + "@" + snapshot_prefix + snaptime
         else:
-            print "Would create snapshot: " + volume + "@" + snapshot_prefix + snaptime
+            print "Wrong volume name %s" % volume
 
 def delSnap(SnapshotName):
     str = "/sbin/zfs destroy " + SnapshotName
