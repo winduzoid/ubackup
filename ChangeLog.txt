@@ -1,3 +1,5 @@
 SOON RELEASE
 
-* By default ubackup writes log file to destination dir specified in hosts.conf. #4
+* Install action has been moved to separate utility "ubackup-install"
+* #5: Change dependency from sys.path[0] to os.path.dirname(os.path.realpath(__file__)) for install config
+* #4: By default ubackup writes log file to destination dir specified in hosts.conf

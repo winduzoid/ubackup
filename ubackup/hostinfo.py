@@ -5,7 +5,7 @@ import re
 import subprocess
 import time
 
-from lib.conf import *
+from ubackup.conf import *
 
 # Host object
 class HostConf:

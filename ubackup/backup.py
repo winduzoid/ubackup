@@ -6,8 +6,8 @@ import sys
 import time
 import fcntl
 
-from lib.hostinfo import *
-from lib.misc import *
+from ubackup.hostinfo import *
+from ubackup.misc import *
 
 def gatherHostInfo(host, rcode=None):
 
