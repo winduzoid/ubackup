@@ -53,7 +53,7 @@ def rotateSnapshot(conf, arg):
         # get sorted snapshot list for the current volume
         snaplist = sorted(os.listdir(dir_volume + "/.zfs/snapshot"), reverse=True)
         # loop on snapshot type list
-        for i in conf.snapshot_names:
+        for i in conf.snapshot_labels:
             # get snapshot list for current type
             fsnaplist = filter(lambda x:re.search(r'^' + conf.conf["snapshot_prefix"] + "_" +  i[0], x), snaplist)
             # loop on this list

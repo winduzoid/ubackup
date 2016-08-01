@@ -34,6 +34,7 @@ class HostConf:
 
         try:
             dst_path = hostsplit[1]
+            self.conf["dstpath"] = dst_path
             if dst_path == "/":
                 self.conf["dst"] = None
                 self.conf["dir_log"] = None
@@ -46,6 +47,7 @@ class HostConf:
         except IndexError:
             self.conf["dst"] = None
             self.conf["dir_log"] = None
+            self.conf["dstpath"] = None
 
         if debug:
             print "destination path = %s, dir_log = %s" % (self.conf["dst"], self.conf["dir_log"])

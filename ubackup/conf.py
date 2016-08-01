@@ -44,7 +44,7 @@ class ItemConfig:
     def __init__(self,readConf, section = "default"):
         self.conf = {}
         self.snap_disable = []
-        self.snapshot_names = []
+        self.snapshot_labels = []
 
         try:
             for i in readConf.cp.items(section):
@@ -63,8 +63,8 @@ class ItemConfig:
             del self.snap_disable
 
         try:
-            for i in [x.strip() for x in self.conf["snapshot_names"].split(',')]:
-                self.snapshot_names.append(i.split(":"))
+            for i in [x.strip() for x in self.conf["snapshot_labels"].split(',')]:
+                self.snapshot_labels.append(i.split(":"))
         except KeyError:
             del self.snapshots
 
@@ -100,7 +100,7 @@ class ItemConfig:
         dconf["snapshot_prefix"] = "ubackup"
         dconf["rsync_short_opts"] = "-aHAXv"
         dconf["rsync_long_opts"] = "--delete --numeric-ids --delete-excluded"
-        dconf["snapshot_names"] = "daily:7, weekly:4, monthly:4"
+        dconf["snapshot_labels"] = "daily:7, weekly:4, monthly:4"
         dconf["date_format"] = "%Y.%m.%d %H:%M:%S"
 
         for i in dconf:
@@ -115,7 +115,7 @@ def showConfig(conf,arg):
 
     print "\nCalculated values:"
     print "snap_disable: %s" % conf.snap_disable
-    print "snapshot_names: %s" % conf.snapshot_names
+    print "snapshot_labels: %s" % conf.snapshot_labels
     sys.exit(0)
 
 def installConfig(arg, pathToUb):
