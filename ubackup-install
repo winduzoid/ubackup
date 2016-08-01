@@ -7,7 +7,7 @@ from ubackup.conf import *
 # processing command line arguments
 arg = readargsInstall()
 
-# path to ub file. By default this file is near ubackup-install
+# path to ub file. By default this file is located nearby ubackup-install
 pathUb = os.path.dirname(os.path.realpath(__file__)) + "/ub"
 
 # installing the new configuration
