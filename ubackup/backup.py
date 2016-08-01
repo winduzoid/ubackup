@@ -6,8 +6,8 @@ import sys
 import time
 import fcntl
 
-from lib.hostinfo import *
-from lib.misc import *
+from ubackup.hostinfo import *
+from ubackup.misc import *
 
 def gatherHostInfo(host, rcode=None):
 
@@ -31,14 +31,14 @@ def gatherHostInfo(host, rcode=None):
         str = ssh_string + "echo %d > /var/log/backup_status.log" % rcode
         subprocess.call(str.split())
 
-def getHosts(conf):
+def getHosts(conf, debug = None):
     hosts = []
     # get host list
     hosts_lines = os.popen("cat " + conf.conf["file_hosts"] + " | egrep -v '^\s*#' | egrep -v '^$'")
     
     # init host objects
     for i in hosts_lines:
-        hosts.append(fillHostInfo(HostConf(i), conf))
+        hosts.append(fillHostInfo(HostConf(i, debug), conf, debug))
     return hosts
 
 def launchRemote(host, filename, log_filename, conf):
@@ -62,11 +62,11 @@ def launchRemote(host, filename, log_filename, conf):
     logfile.write("Done\n")
     logfile.close()
 
-def runBackup(conf, arg):
+def runBackup(conf, arg, debug = None):
     misc = Misc(conf)
     # if specified "-n", exit
     print "\nBackuping hosts\n"
-    hosts = getHosts(conf)
+    hosts = getHosts(conf, debug)
     # if not dry run mode
     if not arg.d:
         # get exclusive lock
@@ -120,12 +120,15 @@ def runBackup(conf, arg):
                 print "Use run_after script: " + stsl(host.conf["run_after"])
 
             print "Destination dir: " + host.conf["dst"]
+            print "Log file: " + host.conf["dir_log"] + "/" + host.conf["name"]
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + str + "\n"
             # If not in "dry run" mode
             if not arg.d:
                 #gatherHostInfo(host)
-                log_filename = conf.conf["dir_log"] + "/" + host.conf["name"]
+                # creating log dir if it not exists
+                subprocess.call("mkdir -p " + host.conf["dir_log"], shell = True)
+                log_filename = host.conf["dir_log"] + "/" + host.conf["name"]
 
                 open(log_filename, "w").close()
                 if host.conf["run_before"]:
@@ -136,6 +139,7 @@ def runBackup(conf, arg):
 
                 logfile = open(log_filename, "a+")
                 print(misc.md + "Backuping host... ")
+                subprocess.call("mkdir -p " + host.conf["dst"], shell = True)
                 rcode = subprocess.call(str.split(), stdout=logfile, stderr=logfile)
                 logfile.close()
 

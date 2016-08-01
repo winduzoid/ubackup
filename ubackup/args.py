@@ -12,8 +12,14 @@ def readargs():
     parser.add_argument('-d', action='store_const', const=True, help = 'Dry run mode. Backup will not be produced. Local known_hosts file will be updated')
     parser.add_argument('-s', action='store_const', const=True, help = 'Show configuration')
     parser.add_argument('-l', '--snapshot-list', action='store_const', const=True, help = 'Show list of snapshots')
+    parser.add_argument('-v', action='store_const', const=True, help = 'Verbose mode')
     parser.add_argument('--snapshot', nargs='?', const="custom", help = 'Create snapshot by name. If omitted, name will be "custom"')
     parser.add_argument('--snapshot-rotate', action='store_const', const=True, help = 'Rotate snapshots. Remove old snapshots')
     parser.add_argument('--snapshot-rm', nargs='*', metavar = 'snapshot', help = 'Remove snapshot by name. Snapshot list you can see by "-l" option')
-    parser.add_argument('--install-config', metavar='path', nargs='?', const=os.path.expanduser('~root') + '/.ubackup', help = 'Install configuration. Default path: ' + os.path.expanduser('~root') + '/.ubackup')
+    parser.add_argument('--version', action='store_const', const=True, help = 'Show version')
+    return parser.parse_args()
+
+def readargsInstall():
+    parser = argparse.ArgumentParser(description='ubackup-install tool is installing ubackup')
+    parser.add_argument('install_config', metavar='path', nargs='?', help='path to directory contains config file ubackup.conf')
     return parser.parse_args()

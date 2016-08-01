@@ -5,12 +5,12 @@ import re
 import subprocess
 import time
 
-from lib.conf import *
+from ubackup.conf import *
 
 # Host object
 class HostConf:
 
-    def __init__(self,host_line):
+    def __init__(self, host_line, debug = None):
 
         hostsplit = host_line.split()
         self.conf = {}
@@ -34,14 +34,23 @@ class HostConf:
 
         try:
             dst_path = hostsplit[1]
-            if re.match(".*/$", dst_path):
+            if dst_path == "/":
+                self.conf["dst"] = None
+                self.conf["dir_log"] = None
+            elif re.match(".*/$", dst_path):
                 self.conf["dst"] = dst_path
+                self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
             else:
                 self.conf["dst"] = dst_path + "/" + self.conf["name"]
+                self.conf["dir_log"] = dst_path
         except IndexError:
             self.conf["dst"] = None
+            self.conf["dir_log"] = None
 
-def fillHostInfo(hostconf, conf):
+        if debug:
+            print "destination path = %s, dir_log = %s" % (self.conf["dst"], self.conf["dir_log"])
+
+def fillHostInfo(hostconf, conf, debug = None):
 
     # exclude list
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
@@ -65,6 +74,15 @@ def fillHostInfo(hostconf, conf):
     else:
         hostconf.conf["dst"] = conf.conf["dir_backup"] + "/" + hostconf.conf["name"]
 
+    # dir log
+    if hostconf.conf["dir_log"]:
+        hostconf.conf["dir_log"] = conf.conf["dir_backup"] + "/" + hostconf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
+    else:
+        hostconf.conf["dir_log"] = conf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
+
+    if debug:
+        print "Dir log: %s" % hostconf.conf["dir_log"]
+
     # src path
     if not hostconf.conf["path"]:
         hostconf.conf["path"] = "/"
@@ -77,7 +95,7 @@ def fillHostInfo(hostconf, conf):
     elif os.path.isfile(conf.conf["dir_run_before"] + "/default"):
         hostconf.conf["run_before"] = conf.conf["dir_run_before"] + "/default"
     else:
-        hostconf.conf["run_before"] = Non
+        hostconf.conf["run_before"] = None
 
     # run after
     if os.path.isfile(conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]):

@@ -5,7 +5,7 @@ import os
 import subprocess
 import shutil
 
-from lib.misc import *
+from ubackup.misc import *
 
 from ConfigParser import SafeConfigParser
 
@@ -81,7 +81,12 @@ class ItemConfig:
         except KeyError:
             dconf["dir_backup"] = "/data/backup/"
 
-        dconf["dir_log"] = dconf["dir_backup"] + "/LOG"
+        try:
+            dconf["dir_log_name"] = self.conf["dir_log_name"]
+        except KeyError:
+             dconf["dir_log_name"] = "LOG"
+
+        dconf["dir_log"] = dconf["dir_backup"] + "/" + dconf["dir_log_name"]
         dconf["file_lock"] = "/tmp/ubackup.lock"
         dconf["file_hosts"] = dconf["dir_etc"] + "/hosts.conf"
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"
@@ -113,23 +118,34 @@ def showConfig(conf,arg):
     print "snapshot_names: %s" % conf.snapshot_names
     sys.exit(0)
 
-def installConfig(arg):
-    if arg.install_config:
-
-        homedir = os.path.expanduser('~root')
-        ssh_config = homedir + '/.ssh/config'
+def installConfig(arg, pathToUb):
+    if not arg.install_config:
+        config_dir = os.path.expanduser('~root') + '/.ubackup'
+    else:
         config_dir = arg.install_config + "/"
-        src_dir = sys.path[0]
 
-        if os.path.isfile(ssh_config):
-            subprocess.call('sed -i "/^\s*HashKnownHosts/d" ' + ssh_config, shell=True)
-        subprocess.call('echo "HashKnownHosts no" >> ' + ssh_config, shell=True)
-        try:
-            print "Installing config files to %s" % config_dir
-            shutil.copytree(src_dir + '/etc/ubackup', config_dir)
-            str = 'sed -i "s|^\s*dir_etc\s*=.*|dir_etc = ' + config_dir + '|g" ' + config_dir + '/ubackup.conf'
-            subprocess.call(str, shell=True)
-        except OSError:
-            print "Problem during installation. Keep in mind that destination directory must not be exist"
+    homedir = os.path.expanduser('~root')
+    ssh_config = homedir + '/.ssh/config'
+    src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
 
-        sys.exit(0)
+    if os.path.isfile(ssh_config):
+        subprocess.call('sed -i "/^\s*HashKnownHosts/d" ' + ssh_config, shell=True)
+    subprocess.call('echo "HashKnownHosts no" >> ' + ssh_config, shell=True)
+    try:
+        print "Installing config files to %s from %s" % (config_dir, src_dir)
+        shutil.copytree(src_dir + '/etc/ubackup', config_dir)
+        str = 'sed -i "s|^\s*dir_etc\s*=.*|dir_etc = ' + config_dir + '|g" ' + config_dir + '/ubackup.conf'
+        subprocess.call(str, shell=True)
+    except OSError:
+        print "I have a problem during config installation. Keep in mind that config destination directory must not be exists"
+    # installing symlink to /usr/local/bin
+    binpath = "/usr/local/bin/ubackup"
+    if os.path.islink(binpath):
+        os.remove(binpath)
+
+    try:
+        os.symlink(pathToUb, binpath)
+    except:
+        print "File exists"
+
+    sys.exit(0)
