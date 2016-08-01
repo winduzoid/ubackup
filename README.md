@@ -16,8 +16,14 @@ The app has been tested on Ubuntu 14.04, but it should work on any Linux distro 
 
 ## Installation
 
-Clone to any directory and run *ubackup --install-config*. By default config files will be installed to $HOME/.ubackup.
-You can install files to another location by specified path in the --install-config option.
+Clone or download to any directory and run *ubackup-install [path]*. By default config files will be installed to $HOME/.ubackup.
+You can install config files to another location by specified path.
+
+Installation script will perform next operations:
+
+* Add "HashKnownHosts no" option to .ssh/config. This option is necessary for automaticaly adding hosts to known_hosts
+* Install config files to config directory
+* Make symlink from */usr/local/bin/ubackup* to *ub* file.
 
 ## Configuration
 
@@ -29,6 +35,6 @@ File contains hosts backup rules, one host on the line. Each host consists of fo
 Parameters:
 
 * host address. May be in FQDN form, or just ip address
-* destination path. If path ending with slash than destination path will looks like **dir**. If path not ending with slash, than destination path will looks like **dir/hostname**
+* relative destination path. If path ending with slash than destination path will looks like **dir**. If path not ending with slash, than destination path will looks like **dir/hostname**
 * host alias. If omitted, than the host name will be taken from the host address (first parameter)
 * source dir. By default is "/", than copying all filesystem of source host.

@@ -6,8 +6,8 @@ import sys
 import time
 import fcntl
 
-from lib.hostinfo import *
-from lib.misc import *
+from ubackup.hostinfo import *
+from ubackup.misc import *
 
 def gatherHostInfo(host, rcode=None):
 
@@ -38,7 +38,7 @@ def getHosts(conf, debug = None):
     
     # init host objects
     for i in hosts_lines:
-        hosts.append(fillHostInfo(HostConf(i, debug), conf))
+        hosts.append(fillHostInfo(HostConf(i, debug), conf, debug))
     return hosts
 
 def launchRemote(host, filename, log_filename, conf):
@@ -120,12 +120,15 @@ def runBackup(conf, arg, debug = None):
                 print "Use run_after script: " + stsl(host.conf["run_after"])
 
             print "Destination dir: " + host.conf["dst"]
+            print "Log file: " + host.conf["dir_log"] + "/" + host.conf["name"]
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + str + "\n"
             # If not in "dry run" mode
             if not arg.d:
                 #gatherHostInfo(host)
-                log_filename = conf.conf["dir_log"] + "/" + host.conf["name"]
+                # creating log dir if it not exists
+                subprocess.call("mkdir -p " + host.conf["dir_log"], shell = True)
+                log_filename = host.conf["dir_log"] + "/" + host.conf["name"]
 
                 open(log_filename, "w").close()
                 if host.conf["run_before"]:
