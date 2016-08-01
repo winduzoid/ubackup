@@ -19,7 +19,7 @@ The app has been tested on Ubuntu 14.04, but it should work on any Linux distro 
 Clone or download to any directory and run *ubackup-install [path]*. By default config files will be installed to $HOME/.ubackup.
 You can install config files to another location by specified path.
 
-Installation script will perform next operations:
+Installation script will perform following operations:
 
 * Add "HashKnownHosts no" option to .ssh/config. This option is necessary for automaticaly adding hosts to known_hosts
 * Install config files to config directory
