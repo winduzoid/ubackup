@@ -1,6 +1,6 @@
 Development:
 
-* #3: Added ability to create snapshot only on specified zfs volume
+* #3: Added ability to create snapshot only on specified zfs volume(s)
 
 v0.3.0:
 
