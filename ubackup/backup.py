@@ -142,7 +142,8 @@ def runBackup(conf, arg, debug = None):
                 print "Use run_after script: " + stsl(host.conf["run_after"])
 
             print "Destination dir: " + host.conf["dst"]
-            print "Log file: " + host.conf["dir_log"] + "/" + host.conf["name"]
+            log_filename = host.conf["dir_log"] + "/" + host.conf["name"] + ".log"
+            print "Log file: " + log_filename
             print "Log file rcode: " + file_log_rcode
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + str + "\n"
@@ -151,7 +152,6 @@ def runBackup(conf, arg, debug = None):
                 #gatherHostInfo(host)
                 # creating log dir if it not exists
                 subprocess.call("mkdir -p " + host.conf["dir_log"], shell = True)
-                log_filename = host.conf["dir_log"] + "/" + host.conf["name"]
 
                 open(log_filename, "w").close()
                 if host.conf["run_before"]:
