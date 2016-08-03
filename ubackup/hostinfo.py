@@ -69,7 +69,7 @@ def fillHostInfo(hostconf, conf, debug = None):
     # custom config
     custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
     if hostconf.conf["dstpath"]:
-        custom_group_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["dstpath"] + ".group"
+        custom_group_config = conf.conf["dir_custom_config"] + "/GROUP." + hostconf.conf["dstpath"]
 
     if os.path.isfile(custom_config):
         crc = ReadConf(custom_config)
