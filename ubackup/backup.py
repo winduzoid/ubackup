@@ -38,7 +38,7 @@ def getHosts(conf, debug = None):
     
     # init host objects
     for i in hosts_lines:
-        hosts.append(fillHostInfo(HostConf(i, debug), conf, debug))
+        hosts.append(fillHostInfo(HostConf(conf, i, debug), conf, debug))
     return hosts
 
 def launchRemote(host, filename, log_filename, conf):

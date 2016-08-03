@@ -1,5 +1,6 @@
 Developing:
 
+  - #7: Added option to config for default destination path inside dir_backup directory 
   - #8: Added .log extention to log files
   - #9: Added ability to specify custom options for group of hosts defined by destination path
   - #6: Added a configuration option for log file name on host with exit backup code

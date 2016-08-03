@@ -10,7 +10,7 @@ from ubackup.conf import *
 # Host object
 class HostConf:
 
-    def __init__(self, host_line, debug = None):
+    def __init__(self, conf, host_line, debug = None):
 
         hostsplit = host_line.split()
         self.conf = {}
@@ -34,21 +34,21 @@ class HostConf:
 
         try:
             dst_path = hostsplit[1]
-            self.conf["dstpath"] = dst_path
-            if dst_path == "/":
-                self.conf["dst"] = None
-                self.conf["dir_log"] = None
-                self.conf["dstpath"] = None
-            elif re.match(".*/$", dst_path):
-                self.conf["dst"] = dst_path
-                self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
-            else:
-                self.conf["dst"] = dst_path + "/" + self.conf["name"]
-                self.conf["dir_log"] = dst_path
         except IndexError:
+            dst_path = conf.conf["dir_default_dest"]
+
+        self.conf["dstpath"] = dst_path
+
+        if dst_path == "/":
             self.conf["dst"] = None
             self.conf["dir_log"] = None
             self.conf["dstpath"] = None
+        elif re.match(".*/$", dst_path):
+            self.conf["dst"] = dst_path
+            self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
+        else:
+            self.conf["dst"] = dst_path + "/" + self.conf["name"]
+            self.conf["dir_log"] = dst_path
 
         if debug:
             print "destination path = %s, dir_log = %s" % (self.conf["dst"], self.conf["dir_log"])
