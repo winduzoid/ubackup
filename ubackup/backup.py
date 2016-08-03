@@ -162,6 +162,7 @@ def runBackup(conf, arg, debug = None):
 
                 logfile = open(log_filename, "a+")
                 print(misc.md + "Backuping host... ")
+                sys.stdout.flush()
                 subprocess.call("mkdir -p " + host.conf["dst"], shell = True)
                 rcode = subprocess.call(str.split(), stdout=logfile, stderr=logfile)
                 logfile.close()
@@ -174,6 +175,7 @@ def runBackup(conf, arg, debug = None):
                 if host.conf["run_after"]:
                     rlcode = launchRemote(host, host.conf["run_after"], log_filename, conf)
             print
+            sys.stdout.flush()
         except KeyboardInterrupt:
             print "\nKeyboard interrupted"
             sys.exit(1)

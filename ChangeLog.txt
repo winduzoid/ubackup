@@ -1,3 +1,7 @@
+v0.6.1:
+
+  - #13: Disabled buffered data output
+
 v0.6.0:
 
   - #7: Added option to config for default destination path inside dir_backup directory 
