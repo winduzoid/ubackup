@@ -10,7 +10,7 @@ from ubackup.conf import *
 # Host object
 class HostConf:
 
-    def __init__(self, host_line, debug = None):
+    def __init__(self, conf, host_line, debug = None):
 
         hostsplit = host_line.split()
         self.conf = {}
@@ -34,25 +34,29 @@ class HostConf:
 
         try:
             dst_path = hostsplit[1]
-            self.conf["dstpath"] = dst_path
-            if dst_path == "/":
-                self.conf["dst"] = None
-                self.conf["dir_log"] = None
-            elif re.match(".*/$", dst_path):
-                self.conf["dst"] = dst_path
-                self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
-            else:
-                self.conf["dst"] = dst_path + "/" + self.conf["name"]
-                self.conf["dir_log"] = dst_path
         except IndexError:
+            dst_path = conf.conf["dir_default_dest"]
+
+        self.conf["dstpath"] = dst_path
+
+        if dst_path == "/":
             self.conf["dst"] = None
             self.conf["dir_log"] = None
             self.conf["dstpath"] = None
+        elif re.match(".*/$", dst_path):
+            self.conf["dst"] = dst_path
+            self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
+        else:
+            self.conf["dst"] = dst_path + "/" + self.conf["name"]
+            self.conf["dir_log"] = dst_path
 
         if debug:
             print "destination path = %s, dir_log = %s" % (self.conf["dst"], self.conf["dir_log"])
 
 def fillHostInfo(hostconf, conf, debug = None):
+
+    if debug:
+        print hostconf.conf
 
     # exclude list
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
@@ -64,11 +68,18 @@ def fillHostInfo(hostconf, conf, debug = None):
 
     # custom config
     custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
+    if hostconf.conf["dstpath"]:
+        custom_group_config = conf.conf["dir_custom_config"] + "/GROUP." + hostconf.conf["dstpath"]
 
     if os.path.isfile(custom_config):
         crc = ReadConf(custom_config)
-        cconf = ItemConfig(crc)
+        cconf = ItemConfig(crc, "custom")
         hostconf.conf.update(cconf.conf)
+    elif custom_group_config:
+        if os.path.isfile(custom_group_config):
+            crc = ReadConf(custom_group_config)
+            cconf = ItemConfig(crc, "custom")
+            hostconf.conf.update(cconf.conf)
 
     # destination dir
     if hostconf.conf["dst"]:
@@ -106,6 +117,9 @@ def fillHostInfo(hostconf, conf, debug = None):
         hostconf.conf["run_after"] = conf.conf["dir_run_after"] + "/default"
     else:
         hostconf.conf["run_after"] = None
+
+    if debug:
+        print hostconf.conf
 
     return hostconf
 

@@ -12,7 +12,7 @@ from ConfigParser import SafeConfigParser
 # Simple class for reading configuration
 class ReadConf:
 
-    def __init__(self, configFilePath, debug):
+    def __init__(self, configFilePath, debug = None):
         self.cp = SafeConfigParser()
         self.section = "default"
         #if os.path.isfile
@@ -54,21 +54,23 @@ class ItemConfig:
             sys.exit(1)
 
         # Init absent configuration options
-        self.fillMissingConf()
+        self.fillMissingConf(section)
 
         try:
             for i in [x.strip() for x in self.conf["snapshot_disable"].split(',')]:
                 self.snap_disable.append(i)
         except KeyError:
-            del self.snap_disable
+            pass
 
         try:
             for i in [x.strip() for x in self.conf["snapshot_labels"].split(',')]:
                 self.snapshot_labels.append(i.split(":"))
         except KeyError:
-            del self.snapshots
+            pass
 
-    def fillMissingConf(self):
+    def fillMissingConf(self, section):
+        if section != "default":
+            return
         dconf = {}
 
         try:
@@ -92,6 +94,7 @@ class ItemConfig:
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"
         dconf["dir_custom_config"] = dconf["dir_etc"] + "/custom_config/"
         dconf["dir_custom"] = dconf["dir_etc"] + "/custom/"
+        dconf["dir_default_dest"] = "/"
         dconf["dir_exec"] = dconf["dir_etc"] + "/exec/"
         dconf["dir_run_before"] = dconf["dir_etc"] + "/run_before/"
         dconf["dir_run_after"] = dconf["dir_etc"] + "/run_after/"
@@ -102,6 +105,7 @@ class ItemConfig:
         dconf["rsync_long_opts"] = "--delete --numeric-ids --delete-excluded"
         dconf["snapshot_labels"] = "daily:7, weekly:4, monthly:4"
         dconf["date_format"] = "%Y.%m.%d %H:%M:%S"
+        dconf["file_log_rcode"] = "/var/log/backup_status.log"
 
         for i in dconf:
             try:
