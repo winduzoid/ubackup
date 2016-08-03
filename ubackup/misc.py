@@ -5,12 +5,14 @@ import time
 import os
 
 class Misc:
-
     def __init__(self, conf):
-        self.md = time.strftime(conf.conf["date_format"] + ": ")
+        self.conf = conf
+
+    def md(self):
+        return time.strftime(self.conf.conf["date_format"] + ": ")
 
     def logDate(self, logfile):
-        logfile.write(self.md)
+        logfile.write(self.md())
 
 # removing redundant slashes
 def stsl(str):
