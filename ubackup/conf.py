@@ -94,6 +94,7 @@ class ItemConfig:
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"
         dconf["dir_custom_config"] = dconf["dir_etc"] + "/custom_config/"
         dconf["dir_custom"] = dconf["dir_etc"] + "/custom/"
+        dconf["dir_default_dest"] = "/"
         dconf["dir_exec"] = dconf["dir_etc"] + "/exec/"
         dconf["dir_run_before"] = dconf["dir_etc"] + "/run_before/"
         dconf["dir_run_after"] = dconf["dir_etc"] + "/run_after/"
