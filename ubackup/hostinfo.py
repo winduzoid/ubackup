@@ -38,6 +38,7 @@ class HostConf:
             if dst_path == "/":
                 self.conf["dst"] = None
                 self.conf["dir_log"] = None
+                self.conf["dstpath"] = None
             elif re.match(".*/$", dst_path):
                 self.conf["dst"] = dst_path
                 self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
@@ -67,11 +68,18 @@ def fillHostInfo(hostconf, conf, debug = None):
 
     # custom config
     custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
+    if hostconf.conf["dstpath"]:
+        custom_group_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["dstpath"] + ".group"
 
     if os.path.isfile(custom_config):
         crc = ReadConf(custom_config)
         cconf = ItemConfig(crc, "custom")
         hostconf.conf.update(cconf.conf)
+    elif custom_group_config:
+        if os.path.isfile(custom_group_config):
+            crc = ReadConf(custom_group_config)
+            cconf = ItemConfig(crc, "custom")
+            hostconf.conf.update(cconf.conf)
 
     # destination dir
     if hostconf.conf["dst"]:

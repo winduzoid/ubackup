@@ -132,6 +132,8 @@ def runBackup(conf, arg, debug = None):
 
             if os.path.isfile(conf.conf["dir_custom_config"] + "/" + host.conf["name"]):
                 print "Use custom config: " + conf.conf["dir_custom_config"] + "/" + host.conf["name"]
+            elif os.path.isfile(conf.conf["dir_custom_config"] + "/" + host.conf["dstpath"] + ".group"):
+                print "Use custom config: " + conf.conf["dir_custom_config"] + "/" + host.conf["dstpath"] + ".group"
 
             if host.conf["run_before"]:
                 print "Use run_before script: " + stsl(host.conf["run_before"])
