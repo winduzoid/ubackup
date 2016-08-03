@@ -1,4 +1,4 @@
-Developing:
+v0.6.0:
 
   - #7: Added option to config for default destination path inside dir_backup directory 
   - #8: Added .log extention to log files
