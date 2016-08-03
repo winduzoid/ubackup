@@ -9,7 +9,7 @@ import fcntl
 from ubackup.hostinfo import *
 from ubackup.misc import *
 
-def gatherHostInfo(host, rcode=None):
+def gatherHostInfo(host, conf, rcode=None, file_log_rcode = None):
 
     dir_systeminfo = "/root/system_state"
     hostname = host.conf["hostname"]
@@ -28,7 +28,7 @@ def gatherHostInfo(host, rcode=None):
         str = ssh_string + "ifconfig > /root/system_state/ifconfig.txt 2>/dev/null"
         subprocess.call(str.split())
     else:
-        str = ssh_string + "echo %d > /var/log/backup_status.log" % rcode
+        str = ssh_string + "echo %d > %s" % (rcode, file_log_rcode)
         subprocess.call(str.split())
 
 def getHosts(conf, debug = None):
@@ -38,7 +38,7 @@ def getHosts(conf, debug = None):
     
     # init host objects
     for i in hosts_lines:
-        hosts.append(fillHostInfo(HostConf(i, debug), conf, debug))
+        hosts.append(fillHostInfo(HostConf(conf, i, debug), conf, debug))
     return hosts
 
 def launchRemote(host, filename, log_filename, conf):
@@ -89,7 +89,7 @@ def runBackup(conf, arg, debug = None):
                     print "Skipping host %s..." % host.conf["name"]
                 continue
             # if specified exclude flag, and we have host list by path, and current host is in this list, do not backup it
-            if len(arg.path) > 0 and host.conf["dstpath"] in [x.lower() for x in arg.path]:
+            if arg.path and host.conf["dstpath"] in [x.lower() for x in arg.path]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                     print "Host dest path is %s" % host.conf["dstpath"]
@@ -101,7 +101,7 @@ def runBackup(conf, arg, debug = None):
                     print "Skipping host %s..." % host.conf["name"]
                 continue
             # if not specified exclude flag, and we have host list by path, and current host is not in list, do not backup it
-            if len(arg.path) > 0 and host.conf["dstpath"] not in [x.lower() for x in arg.path]:
+            if arg.path and host.conf["dstpath"] not in [x.lower() for x in arg.path]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                     print "Host dest path is %s" % host.conf["dstpath"]
@@ -119,6 +119,11 @@ def runBackup(conf, arg, debug = None):
             rsync_long_opts = conf.conf["rsync_long_opts"]
 
         try:
+            file_log_rcode = host.conf["file_log_rcode"]
+        except KeyError:
+            file_log_rcode = conf.conf["file_log_rcode"]
+
+        try:
             str = "egrep -q '^" + host.conf["hostname"] + "\s+.*' /root/.ssh/known_hosts || ssh-keyscan " + host.conf["hostname"] + " >> /root/.ssh/known_hosts"
             subprocess.check_output(str, shell=True)
             str = "rsync " + rsync_short_opts + " " + rsync_long_opts + " --exclude-from " + host.conf["exclude_list"] + " " + host.conf["hostname"] + ":" + host.conf["path"] + " " + host.conf["dst"]            
@@ -127,6 +132,8 @@ def runBackup(conf, arg, debug = None):
 
             if os.path.isfile(conf.conf["dir_custom_config"] + "/" + host.conf["name"]):
                 print "Use custom config: " + conf.conf["dir_custom_config"] + "/" + host.conf["name"]
+            elif os.path.isfile(conf.conf["dir_custom_config"] + "/GROUP." + host.conf["dstpath"]):
+                print "Use custom config: " + conf.conf["dir_custom_config"] + "/GROUP." + host.conf["dstpath"]
 
             if host.conf["run_before"]:
                 print "Use run_before script: " + stsl(host.conf["run_before"])
@@ -135,7 +142,9 @@ def runBackup(conf, arg, debug = None):
                 print "Use run_after script: " + stsl(host.conf["run_after"])
 
             print "Destination dir: " + host.conf["dst"]
-            print "Log file: " + host.conf["dir_log"] + "/" + host.conf["name"]
+            log_filename = host.conf["dir_log"] + "/" + host.conf["name"] + ".log"
+            print "Log file: " + log_filename
+            print "Log file rcode: " + file_log_rcode
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + str + "\n"
             # If not in "dry run" mode
@@ -143,7 +152,6 @@ def runBackup(conf, arg, debug = None):
                 #gatherHostInfo(host)
                 # creating log dir if it not exists
                 subprocess.call("mkdir -p " + host.conf["dir_log"], shell = True)
-                log_filename = host.conf["dir_log"] + "/" + host.conf["name"]
 
                 open(log_filename, "w").close()
                 if host.conf["run_before"]:
@@ -158,7 +166,7 @@ def runBackup(conf, arg, debug = None):
                 rcode = subprocess.call(str.split(), stdout=logfile, stderr=logfile)
                 logfile.close()
 
-                gatherHostInfo(host, rcode)
+                gatherHostInfo(host, conf, rcode, file_log_rcode)
                 print(misc.md + "Done. Exit code: %d" % rcode)
                 logfile = open(log_filename, "a+")
                 logfile.write("Exit code: %d\n" % rcode)

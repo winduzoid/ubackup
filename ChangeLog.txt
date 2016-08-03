@@ -1,14 +1,21 @@
+Developing:
+
+  - #7: Added option to config for default destination path inside dir_backup directory 
+  - #8: Added .log extention to log files
+  - #9: Added ability to specify custom options for group of hosts defined by destination path
+  - #6: Added a configuration option for log file name on host with exit backup code
+
 v0.5.0:
 
-* #1: Implemented ability to choose host list by destination path at the command line
+  - #1: Implemented ability to choose host list by destination path at the command line
 
 v0.4.0:
 
-* #3: Added ability to create snapshot only on specified zfs volume(s)
+  - #3: Added ability to create snapshot only on specified zfs volume(s)
 
 v0.3.0:
 
-* Install action has been moved to separate utility "ubackup-install"
-* #5: Change dependency from sys.path[0] to os.path.dirname(os.path.realpath(__file__)) for install config
-* #4: By default ubackup writes log file to destination dir specified in hosts.conf
+  - Install action has been moved to separate utility "ubackup-install"
+  - #5: Change dependency from sys.path[0] to os.path.dirname(os.path.realpath(__file__)) for install config
+  - #4: By default ubackup writes log file to destination dir specified in hosts.conf
 
