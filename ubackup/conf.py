@@ -89,6 +89,7 @@ class ItemConfig:
              dconf["dir_log_name"] = "LOG"
 
         dconf["dir_log"] = dconf["dir_backup"] + "/" + dconf["dir_log_name"]
+        dconf["dir_systeminfo"] = "/root/systeminfo"
         dconf["file_lock"] = "/tmp/ubackup.lock"
         dconf["file_hosts"] = dconf["dir_etc"] + "/hosts.conf"
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"

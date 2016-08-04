@@ -12,21 +12,21 @@ from ubackup.report import *
 
 def gatherHostInfo(host, conf, rcode=None, file_log_rcode = None):
 
-    dir_systeminfo = "/root/system_state"
+    dir_systeminfo = conf.conf["dir_systeminfo"]
     hostname = host.conf["hostname"]
     ssh_string = "ssh " + hostname + " "
     if rcode == None:
-        mystr = ssh_string + "mkdir -p /root/system_state"
+        mystr = ssh_string + "mkdir -p " + dir_systeminfo
         subprocess.call(mystr.split())
-        mystr = ssh_string + "df -h > /root/system_state/df.txt"
+        mystr = ssh_string + "df -h > " + dir_systeminfo + "/df.txt"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "cat /proc/mounts > /root/system_state/mounts.txt"
+        mystr = ssh_string + "cat /proc/mounts > " + dir_systeminfo + "/mounts.txt"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "dpkg -l > /root/system_state/packages.txt"
+        mystr = ssh_string + "dpkg -l > " + dir_systeminfo + "/packages.txt"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "lvscan > /root/system_state/lvscan.txt 2>/dev/null"
+        mystr = ssh_string + "lvscan > " + dir_systeminfo + "/lvscan.txt 2>/dev/null"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "ifconfig > /root/system_state/ifconfig.txt 2>/dev/null"
+        mystr = ssh_string + "ifconfig > " + dir_systeminfo + "/ifconfig.txt 2>/dev/null"
         subprocess.call(mystr.split())
     else:
         mystr = ssh_string + "echo %d > %s" % (rcode, file_log_rcode)
