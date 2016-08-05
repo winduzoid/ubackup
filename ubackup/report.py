@@ -1,6 +1,10 @@
 # coding: utf8
 
 import sys
+import smtplib
+from email.mime.text import MIMEText
+
+from cStringIO import StringIO
 
 from ubackup.misc import *
 
@@ -31,19 +35,45 @@ class Report:
     def set(self, name, uvalue):
         self.data[name] = uvalue
 
-    def generate(self):
-        misc = Misc(self.conf)
+    def show(self):
         print "Report\n"
+        print self.generate()
+
+    def email(self):
+        msg = MIMEText(self.generate())
+        conf = self.conf
+        msg['Subject'] = conf.conf["email_subject"]
+        msg['From'] =  conf.conf["email_from"]
+        msg['To'] = conf.conf["email_to"]
+        s = smtplib.SMTP(conf.conf["email_host"])
+        try:
+            s.sendmail(msg['From'], msg['To'], msg.as_string())
+        except smtplib.SMTPRecipientsRefused:
+            print "Incorrect report recipient"
+
+    def generate(self, force = None):
+        if force:
+            try:
+                del(self.genstr)
+            except AttributeError:
+                pass
+        try:
+            return self.genstr
+        except AttributeError:
+            pass
+        misc = Misc(self.conf)
+        sys.stdout = mystdout = StringIO()
         duration = self.data["TimeFinish"] - self.data["TimeStart"]
         hours, remainder = divmod(duration, 3600)
         minutes, seconds = divmod(remainder, 60)
-        print("Duration: %02d:%02d:%02d (%s - %s)" % (hours, minutes, seconds, misc.md(self.data["TimeStart"], delim=''), misc.md(self.data["TimeFinish"], delim='')))
+        sys.stdout.write("Duration: %02d:%02d:%02d (%s - %s)\n" % (hours, minutes, seconds, misc.md(self.data["TimeStart"], delim=''), misc.md(self.data["TimeFinish"], delim='')))
         if self.debug:
             for i in sorted(self.data):
-                print "%s: %s" % (i, self.data[i])
+                sys.stdout.write("%s: %s\n" % (i, self.data[i]))
         else:
-            print "DryRun: %s" % self.data["DryRun"]
-        print "\nHosts:"
+            if self.data["DryRun"] == True:
+                sys.stdout.write("DryRun: %s\n" % self.data["DryRun"])
+        sys.stdout.write("\nHosts:\n")
         for i in self.reportItem:
             sys.stdout.write("Host name = %s" % i.data["name"])
             try:
@@ -58,5 +88,6 @@ class Report:
                     sys.stdout.write(", Duration: %02d:%02d:%02d (%s - %s)" % (hours, minutes, seconds, misc.md(i.data["time_start"], delim=''), misc.md(i.data["time_finish"], delim='')))
             except KeyError:
                 pass
-            print
-        print
+            sys.stdout.write("\n")
+        sys.stdout = sys.__stdout__
+        return mystdout.getvalue()

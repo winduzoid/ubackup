@@ -204,4 +204,5 @@ def runBackup(conf, arg, debug = None):
         fd.close()
 
     report.set("TimeFinish", time.time())
-    report.generate()
+    report.show()
+    report.email()
