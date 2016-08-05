@@ -207,4 +207,5 @@ def runBackup(conf, arg, debug = None):
 
     report.set("TimeFinish", time.time())
     report.show()
-    report.email()
+    if conf.conf["report_email"].lower() != "false":
+        report.email()
