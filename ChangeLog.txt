@@ -1,3 +1,7 @@
+Developing:
+
+  - #10: Implemented ability to send reports
+
 v0.6.1:
 
   - #13: Disabled buffered data output
