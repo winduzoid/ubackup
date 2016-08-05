@@ -46,8 +46,12 @@ class Report:
         msg['From'] =  conf.conf["email_from"]
         msg['To'] = conf.conf["email_to"]
         s = smtplib.SMTP(conf.conf["email_host"])
+        sys.stdout.write("Sending report by email... ")
+        sys.stdout.flush()
         try:
             s.sendmail(msg['From'], msg['To'], msg.as_string())
+            sys.stdout.write("Done\n")
+            sys.stdout.flush()
         except smtplib.SMTPRecipientsRefused:
             print "Incorrect report recipient"
 
