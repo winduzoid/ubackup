@@ -65,7 +65,7 @@ def launchRemote(host, filename, log_filename, conf):
 
 def runBackup(conf, arg, debug = None):
     misc = Misc(conf)
-    report = Report(conf, debug)
+    report = Report(conf, arg, debug)
     report.set("TimeStart", time.time())
     # if specified "-n", exit
     print "\nBackuping hosts\n"
@@ -207,5 +207,4 @@ def runBackup(conf, arg, debug = None):
 
     report.set("TimeFinish", time.time())
     report.show()
-    if conf.conf["report_email"].lower() != "false":
-        report.email()
+    report.email()
