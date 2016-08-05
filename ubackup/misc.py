@@ -8,8 +8,11 @@ class Misc:
     def __init__(self, conf):
         self.conf = conf
 
-    def md(self):
-        return time.strftime(self.conf.conf["date_format"] + ": ")
+    def md(self, mytime = None, delim = ": "):
+        try:
+            return time.strftime(self.conf.conf["date_format"] + delim, time.localtime(mytime))
+        except TypeError:
+            return time.strftime(self.conf.conf["date_format"] + delim)
 
     def logDate(self, logfile):
         logfile.write(self.md())

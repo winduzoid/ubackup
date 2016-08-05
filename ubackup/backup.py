@@ -12,21 +12,21 @@ from ubackup.report import *
 
 def gatherHostInfo(host, conf, rcode=None, file_log_rcode = None):
 
-    dir_systeminfo = conf.conf["dir_systeminfo"]
+    dir_systeminfo = "/root/system_state"
     hostname = host.conf["hostname"]
     ssh_string = "ssh " + hostname + " "
     if rcode == None:
-        mystr = ssh_string + "mkdir -p " + dir_systeminfo
+        mystr = ssh_string + "mkdir -p /root/system_state"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "df -h > " + dir_systeminfo + "/df.txt"
+        mystr = ssh_string + "df -h > /root/system_state/df.txt"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "cat /proc/mounts > " + dir_systeminfo + "/mounts.txt"
+        mystr = ssh_string + "cat /proc/mounts > /root/system_state/mounts.txt"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "dpkg -l > " + dir_systeminfo + "/packages.txt"
+        mystr = ssh_string + "dpkg -l > /root/system_state/packages.txt"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "lvscan > " + dir_systeminfo + "/lvscan.txt 2>/dev/null"
+        mystr = ssh_string + "lvscan > /root/system_state/lvscan.txt 2>/dev/null"
         subprocess.call(mystr.split())
-        mystr = ssh_string + "ifconfig > " + dir_systeminfo + "/ifconfig.txt 2>/dev/null"
+        mystr = ssh_string + "ifconfig > /root/system_state/ifconfig.txt 2>/dev/null"
         subprocess.call(mystr.split())
     else:
         mystr = ssh_string + "echo %d > %s" % (rcode, file_log_rcode)
@@ -65,7 +65,8 @@ def launchRemote(host, filename, log_filename, conf):
 
 def runBackup(conf, arg, debug = None):
     misc = Misc(conf)
-    report = Report()
+    report = Report(conf)
+    report.set("TimeStart", time.time())
     # if specified "-n", exit
     print "\nBackuping hosts\n"
     hosts = getHosts(conf, debug)
@@ -160,16 +161,21 @@ def runBackup(conf, arg, debug = None):
                 subprocess.call("mkdir -p " + host.conf["dir_log"], shell = True)
 
                 open(log_filename, "w").close()
+                reportItem.set("time_start", time.time())
                 if host.conf["run_before"]:
+                    reportItem.set("time_start_run_before", time.time())
                     rlcode = launchRemote(host, host.conf["run_before"], log_filename, conf)
+                    reportItem.set("time_finish_run_before", time.time())
                 logfile = open(log_filename, "a+")
                 misc.logDate(logfile)
                 logfile.close()
 
                 logfile = open(log_filename, "a+")
                 print(misc.md() + "Backuping host... ")
+                reportItem.set("time_start_backup", time.time())
                 subprocess.call("mkdir -p " + host.conf["dst"], shell = True)
                 rcode = subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
+                reportItem.set("time_finish_backup", time.time())
                 logfile.close()
 
                 gatherHostInfo(host, conf, rcode, file_log_rcode)
@@ -179,7 +185,10 @@ def runBackup(conf, arg, debug = None):
                 logfile.close()
                 reportItem.set("rcode", rcode)
                 if host.conf["run_after"]:
+                    reportItem.set("time_start_run_after", time.time())
                     rlcode = launchRemote(host, host.conf["run_after"], log_filename, conf)
+                    reportItem.set("time_finish_run_after", time.time())
+                reportItem.set("time_finish", time.time())
             print
         except KeyboardInterrupt:
             print "\nKeyboard interrupted"
@@ -194,4 +203,5 @@ def runBackup(conf, arg, debug = None):
         fcntl.lockf(fd, fcntl.LOCK_UN)
         fd.close()
 
+    report.set("TimeFinish", time.time())
     report.show()
