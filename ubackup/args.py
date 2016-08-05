@@ -18,6 +18,8 @@ def readargs():
     parser.add_argument('--snapshot-volume', metavar = 'VOLUME', nargs='*', help = 'Create snapshot only on specified volumes')
     parser.add_argument('--snapshot-rotate', action='store_const', const=True, help = 'Rotate snapshots. Remove old snapshots')
     parser.add_argument('--snapshot-rm', nargs='*', metavar = 'SNAPSHOT', help = 'Remove snapshot by name. Snapshot list you can see by "-l" option')
+    parser.add_argument('--email', action='store_const', const=True, help = "Send report by email")
+    parser.add_argument('--no-email', action='store_const', const=True, help = "Don't send report by email")
     parser.add_argument('--version', action='store_const', const=True, help = 'Show version')
     return parser.parse_args()
 

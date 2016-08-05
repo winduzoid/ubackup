@@ -23,7 +23,8 @@ class ReportItem:
 
 
 class Report:
-    def __init__(self, conf, debug = None):
+    def __init__(self, conf, arg, debug = None):
+        self.arg = arg
         self.conf = conf
         self.debug = debug
         self.reportItem = []
@@ -40,8 +41,12 @@ class Report:
         print self.generate()
 
     def email(self):
-        msg = MIMEText(self.generate())
         conf = self.conf
+        if self.arg.no_email or self.arg.d:
+            return
+        elif conf.conf["report_email"].lower() == "false" and not self.arg.email:
+            return
+        msg = MIMEText(self.generate())
         msg['Subject'] = conf.conf["email_subject"]
         msg['From'] =  conf.conf["email_from"]
         msg['To'] = conf.conf["email_to"]
@@ -79,11 +84,11 @@ class Report:
                 sys.stdout.write("DryRun: %s\n" % self.data["DryRun"])
         sys.stdout.write("\nHosts:\n")
         for i in self.reportItem:
-            sys.stdout.write("Host name = %s" % i.data["name"])
             try:
-                sys.stdout.write(", Return code: %d" % i.data["rcode"])
+                sys.stdout.write("Code: %d, " % i.data["rcode"])
             except KeyError:
                 pass
+            sys.stdout.write("Host name = %s" % i.data["name"])
             try:
                 if i.data["time_start"]:
                     duration = int(i.data["time_finish"]) - int(i.data["time_start"])
