@@ -172,6 +172,7 @@ def runBackup(conf, arg, debug = None):
 
                 logfile = open(log_filename, "a+")
                 print(misc.md() + "Backuping host... ")
+                sys.stdout.flush()
                 reportItem.set("time_start_backup", time.time())
                 subprocess.call("mkdir -p " + host.conf["dst"], shell = True)
                 rcode = subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
@@ -190,6 +191,7 @@ def runBackup(conf, arg, debug = None):
                     reportItem.set("time_finish_run_after", time.time())
                 reportItem.set("time_finish", time.time())
             print
+            sys.stdout.flush()
         except KeyboardInterrupt:
             print "\nKeyboard interrupted"
             sys.exit(1)
