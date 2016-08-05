@@ -42,9 +42,11 @@ class Report:
 
     def email(self):
         conf = self.conf
-        if self.arg.no_email or self.arg.d:
+        if self.arg.no_email:
             return
         elif conf.conf["report_email"].lower() == "false" and not self.arg.email:
+            return
+        elif self.arg.d and not self.arg.email:
             return
         msg = MIMEText(self.generate())
         msg['Subject'] = conf.conf["email_subject"]
