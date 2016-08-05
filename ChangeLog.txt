@@ -1,4 +1,4 @@
-Develop:
+v0.7.1:
 
   - #16: Added ability to switch sending report by email through command-line option
 
