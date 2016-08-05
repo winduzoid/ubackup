@@ -106,6 +106,11 @@ class ItemConfig:
         dconf["snapshot_labels"] = "daily:7, weekly:4, monthly:4"
         dconf["date_format"] = "%Y.%m.%d %H:%M:%S"
         dconf["file_log_rcode"] = "/var/log/backup_status.log"
+        dconf["email_from"] = "ubackup@localhost"
+        dconf["email_to"] = "ubackup@localhost"
+        dconf["email_subject"] = "Ubackup report"
+        dconf["email_host"] = "localhost"
+        dconf["report_email"] = "false"
 
         for i in dconf:
             try:

@@ -1,7 +1,7 @@
 30 6 * * * root /usr/local/bin/ubackup > /data/backup/LOG/ubackup.log
 
-15 23 * * * root /usr/local/bin/ubackup --snapshot daily
-20 23 * * 0 root /usr/local/bin/ubackup --snapshot weekly
-25 23 1 * * root /usr/local/bin/ubackup --snapshot monthly
+15 23 * * * root /usr/local/bin/ubackup -n --snapshot daily
+20 23 * * 0 root /usr/local/bin/ubackup -n --snapshot weekly
+25 23 1 * * root /usr/local/bin/ubackup -n --snapshot monthly
 
-30 23 * * * root /usr/local/bin/ubackup --snapshot-rotate
+30 23 * * * root /usr/local/bin/ubackup -n --snapshot-rotate
