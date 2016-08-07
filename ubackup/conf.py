@@ -111,6 +111,7 @@ class ItemConfig:
         dconf["email_subject"] = "Ubackup report"
         dconf["email_host"] = "localhost"
         dconf["report_email"] = "false"
+        dconf["report_sort_rcode"] = "true"
 
         for i in dconf:
             try:
