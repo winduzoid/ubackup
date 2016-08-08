@@ -1,5 +1,8 @@
 Develop:
 
+  - #14: Implemented appropriate group scripts for run_before / run_after 
+  - #18: Implemented replacing slashes to hyphen in the group operations 
+  - #15: Implemented appropriate group exclude file 
   - #17: Implemented sorting report by return code
 
 v0.7.2:
