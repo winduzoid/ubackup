@@ -62,6 +62,14 @@ class Report:
         except smtplib.SMTPRecipientsRefused:
             print "Incorrect report recipient"
 
+    def sortrcode(self, current):
+        if self.conf.conf["report_sort_rcode"].lower() == "false":
+            return 0
+        try:
+            return current.data["rcode"]
+        except KeyError:
+            return 0
+
     def generate(self, force = None):
         if force:
             try:
@@ -85,7 +93,7 @@ class Report:
             if self.data["DryRun"] == True:
                 sys.stdout.write("DryRun: %s\n" % self.data["DryRun"])
         sys.stdout.write("\nHosts:\n")
-        for i in self.reportItem:
+        for i in sorted(self.reportItem, key=lambda code: self.sortrcode(code), reverse = True):
             try:
                 sys.stdout.write("Code: %d, " % i.data["rcode"])
             except KeyError:

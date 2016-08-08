@@ -137,10 +137,15 @@ def runBackup(conf, arg, debug = None):
             print misc.md()
             print "Host: " + host.conf["name"]
 
+            if host.conf["group_name"]:
+                print "Group name: " + host.conf["group_name"]
+            else:
+                print "No group name"
+
             if os.path.isfile(conf.conf["dir_custom_config"] + "/" + host.conf["name"]):
                 print "Use custom config: " + conf.conf["dir_custom_config"] + "/" + host.conf["name"]
-            elif os.path.isfile(conf.conf["dir_custom_config"] + "/GROUP." + host.conf["dstpath"]):
-                print "Use custom config: " + conf.conf["dir_custom_config"] + "/GROUP." + host.conf["dstpath"]
+            elif os.path.isfile(conf.conf["dir_custom_config"] + "/GROUP." + host.conf["group_name"]):
+                print "Use custom config: " + conf.conf["dir_custom_config"] + "/GROUP." + host.conf["group_name"]
 
             if host.conf["run_before"]:
                 print "Use run_before script: " + stsl(host.conf["run_before"])
