@@ -63,11 +63,17 @@ def fillHostInfo(hostconf, conf, debug = None):
 
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
     custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
+    run_before = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
+    run_after = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
     custom_group_config = ""
     exclude_group_list = ""
+    run_group_before = ""
+    run_group_after = ""
     if hostconf.conf["group_name"]:
         custom_group_config = conf.conf["dir_custom_config"] + "/GROUP." + hostconf.conf["group_name"]
         exclude_group_list = conf.conf["dir_exclude"] + "/GROUP." + hostconf.conf["group_name"]
+        run_group_before = conf.conf["dir_run_before"] + "/GROUP." + hostconf.conf["group_name"]
+        run_group_after = conf.conf["dir_run_after"] + "/GROUP." + hostconf.conf["group_name"]
 
 
     if os.path.isfile(exclude_list):
@@ -109,16 +115,20 @@ def fillHostInfo(hostconf, conf, debug = None):
     # run scripts
 
     # run_before
-    if os.path.isfile(conf.conf["dir_run_before"] + "/" + hostconf.conf["name"]):
-        hostconf.conf["run_before"] = conf.conf["dir_run_before"] + "/" + hostconf.conf["name"]
+    if os.path.isfile(run_before):
+        hostconf.conf["run_before"] = run_before
+    elif os.path.isfile(run_group_before):
+        hostconf.conf["run_before"] = run_group_before
     elif os.path.isfile(conf.conf["dir_run_before"] + "/default"):
         hostconf.conf["run_before"] = conf.conf["dir_run_before"] + "/default"
     else:
         hostconf.conf["run_before"] = None
 
     # run after
-    if os.path.isfile(conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]):
-        hostconf.conf["run_after"] = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
+    if os.path.isfile(run_after):
+        hostconf.conf["run_after"] = run_after
+    elif os.path.isfile(run_group_after):
+        hostconf.conf["run_after"] = run_group_after
     elif os.path.isfile(conf.conf["dir_run_after"] + "/default"):
         hostconf.conf["run_after"] = conf.conf["dir_run_after"] + "/default"
     else:
