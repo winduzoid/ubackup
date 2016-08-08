@@ -38,38 +38,50 @@ class HostConf:
             dst_path = conf.conf["dir_default_dest"]
 
         self.conf["dstpath"] = dst_path
+        self.conf["group_name"] = dst_path.replace("/","-")
 
         if dst_path == "/":
             self.conf["dst"] = None
             self.conf["dir_log"] = None
             self.conf["dstpath"] = None
+            self.conf["group_name"] = ""
         elif re.match(".*/$", dst_path):
             self.conf["dst"] = dst_path
             self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
+            self.conf["group_name"] = ""
         else:
             self.conf["dst"] = dst_path + "/" + self.conf["name"]
             self.conf["dir_log"] = dst_path
 
         if debug:
-            print "destination path = %s, dir_log = %s" % (self.conf["dst"], self.conf["dir_log"])
+            print "destination path = %s, dir_log = %s, group_name = %s" % (self.conf["dst"], self.conf["dir_log"], self.conf["group_name"])
 
 def fillHostInfo(hostconf, conf, debug = None):
 
     if debug:
         print hostconf.conf
 
-    # exclude list
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
+    custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
+    run_before = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
+    run_after = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
+    custom_group_config = ""
+    exclude_group_list = ""
+    run_group_before = ""
+    run_group_after = ""
+    if hostconf.conf["group_name"]:
+        custom_group_config = conf.conf["dir_custom_config"] + "/GROUP." + hostconf.conf["group_name"]
+        exclude_group_list = conf.conf["dir_exclude"] + "/GROUP." + hostconf.conf["group_name"]
+        run_group_before = conf.conf["dir_run_before"] + "/GROUP." + hostconf.conf["group_name"]
+        run_group_after = conf.conf["dir_run_after"] + "/GROUP." + hostconf.conf["group_name"]
+
 
     if os.path.isfile(exclude_list):
         hostconf.conf["exclude_list"] = exclude_list
+    elif os.path.isfile(exclude_group_list):
+        hostconf.conf["exclude_list"] = exclude_group_list
     else:
         hostconf.conf["exclude_list"] = conf.conf["dir_exclude"] + "/default"
-
-    # custom config
-    custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
-    if hostconf.conf["dstpath"]:
-        custom_group_config = conf.conf["dir_custom_config"] + "/GROUP." + hostconf.conf["dstpath"]
 
     if os.path.isfile(custom_config):
         crc = ReadConf(custom_config)
@@ -103,16 +115,20 @@ def fillHostInfo(hostconf, conf, debug = None):
     # run scripts
 
     # run_before
-    if os.path.isfile(conf.conf["dir_run_before"] + "/" + hostconf.conf["name"]):
-        hostconf.conf["run_before"] = conf.conf["dir_run_before"] + "/" + hostconf.conf["name"]
+    if os.path.isfile(run_before):
+        hostconf.conf["run_before"] = run_before
+    elif os.path.isfile(run_group_before):
+        hostconf.conf["run_before"] = run_group_before
     elif os.path.isfile(conf.conf["dir_run_before"] + "/default"):
         hostconf.conf["run_before"] = conf.conf["dir_run_before"] + "/default"
     else:
         hostconf.conf["run_before"] = None
 
     # run after
-    if os.path.isfile(conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]):
-        hostconf.conf["run_after"] = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
+    if os.path.isfile(run_after):
+        hostconf.conf["run_after"] = run_after
+    elif os.path.isfile(run_group_after):
+        hostconf.conf["run_after"] = run_group_after
     elif os.path.isfile(conf.conf["dir_run_after"] + "/default"):
         hostconf.conf["run_after"] = conf.conf["dir_run_after"] + "/default"
     else:
