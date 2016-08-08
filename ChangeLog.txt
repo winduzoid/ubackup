@@ -1,4 +1,4 @@
-Develop:
+v0.8.0:
 
   - #14: Implemented appropriate group scripts for run_before / run_after 
   - #18: Implemented replacing slashes to hyphen in the group operations 
