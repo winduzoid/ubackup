@@ -133,12 +133,19 @@ def loadDesc():
 def showConfig(conf, arg):
     desc = loadDesc()
     for i in sorted(conf.conf):
-        sys.stdout.write("%s = %s\t\t" % (i, conf.conf[i]))
         try:
-            sys.stdout.write("%s\n" % desc[i])
+            str_desc = desc[i]
         except KeyError:
-            sys.stdout.write("This is unknown or experimental option\n")
-        sys.stdout.flush()
+            str_desc = "This is unknown or experimental option"
+        fieldlen = 45
+        mystr = "{:<" + str(fieldlen) + "} {}"
+        #print mystr.format('%s = \n      %s' % (i, conf.conf[i]), str_desc)
+        if len("%s = %s" % (i, conf.conf[i])) > fieldlen:
+            print i + " ="
+            print mystr.format('     %s' % conf.conf[i], str_desc)
+        else:
+            print mystr.format('%s = %s' % (i, conf.conf[i]), str_desc)
+        print
 
     print "\nCalculated values:"
     print "snap_disable: %s" % conf.snap_disable
