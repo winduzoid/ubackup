@@ -11,12 +11,14 @@ from ubackup.misc import *
 from ConfigParser import SafeConfigParser
 
 # Simple class for reading configuration
+
+
 class ReadConf:
 
-    def __init__(self, configFilePath, debug = None):
+    def __init__(self, configFilePath, debug=None):
         self.cp = SafeConfigParser()
         self.section = "default"
-        #if os.path.isfile
+        # if os.path.isfile
         homedir = os.path.expanduser('~root')
         conffile = ""
         if configFilePath:
@@ -31,18 +33,22 @@ class ReadConf:
             print "configpath: %s" % conffile
         self.cp.read(conffile)
 
-    def items(self,section=None):
-        if section == None: section = self.section
+    def items(self, section=None):
+        if section == None:
+            section = self.section
         return self.cp.items(section)
 
-    def rc(self,keyname,section=None):
-        if section == None: section = self.section
-        return self.cp.get(section,keyname)
+    def rc(self, keyname, section=None):
+        if section == None:
+            section = self.section
+        return self.cp.get(section, keyname)
 
 # Object with config
+
+
 class ItemConfig:
 
-    def __init__(self,readConf, section = "default"):
+    def __init__(self, readConf, section="default"):
         self.conf = {}
         self.snap_disable = []
         self.snapshot_labels = []
@@ -87,7 +93,7 @@ class ItemConfig:
         try:
             dconf["dir_log_name"] = self.conf["dir_log_name"]
         except KeyError:
-             dconf["dir_log_name"] = "LOG"
+            dconf["dir_log_name"] = "LOG"
 
         dconf["dir_log"] = dconf["dir_backup"] + "/" + dconf["dir_log_name"]
         dconf["file_lock"] = "/tmp/ubackup.lock"
@@ -120,6 +126,7 @@ class ItemConfig:
             except KeyError:
                 self.conf[i] = stsl(dconf[i])
 
+
 def loadDesc():
     src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
     desc_file = src_dir + "/confdesc.yaml"
@@ -130,6 +137,7 @@ def loadDesc():
             print(exc)
     return desc
 
+
 def showConfig(conf, arg):
     desc = loadDesc()
     for i in sorted(conf.conf):
@@ -139,7 +147,7 @@ def showConfig(conf, arg):
             str_desc = "This is unknown or experimental option"
         fieldlen = 45
         mystr = "{:<" + str(fieldlen) + "} {}"
-        #print mystr.format('%s = \n      %s' % (i, conf.conf[i]), str_desc)
+        # print mystr.format('%s = \n      %s' % (i, conf.conf[i]), str_desc)
         if len("%s = %s" % (i, conf.conf[i])) > fieldlen:
             print i + " ="
             print mystr.format('     %s' % conf.conf[i], str_desc)
@@ -152,6 +160,7 @@ def showConfig(conf, arg):
     print "snapshot_labels: %s" % conf.snapshot_labels
     sys.exit(0)
 
+
 def installConfig(arg, pathToUb):
     if not arg.install_config:
         config_dir = os.path.expanduser('~root') + '/.ubackup'
@@ -163,12 +172,14 @@ def installConfig(arg, pathToUb):
     src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
 
     if os.path.isfile(ssh_config):
-        subprocess.call('sed -i "/^\s*HashKnownHosts/d" ' + ssh_config, shell=True)
+        subprocess.call('sed -i "/^\s*HashKnownHosts/d" ' +
+                        ssh_config, shell=True)
     subprocess.call('echo "HashKnownHosts no" >> ' + ssh_config, shell=True)
     try:
         print "Installing config files to %s from %s" % (config_dir, src_dir)
         shutil.copytree(src_dir + '/etc/ubackup', config_dir)
-        str = 'sed -i "s|^\s*dir_etc\s*=.*|dir_etc = ' + config_dir + '|g" ' + config_dir + '/ubackup.conf'
+        str = 'sed -i "s|^\s*dir_etc\s*=.*|dir_etc = ' + \
+            config_dir + '|g" ' + config_dir + '/ubackup.conf'
         subprocess.call(str, shell=True)
     except OSError:
         print "I have a problem during config installation. Keep in mind that config destination directory must not be exists"

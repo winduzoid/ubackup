@@ -8,9 +8,10 @@ from cStringIO import StringIO
 
 from ubackup.misc import *
 
+
 class ReportItem:
-    
-    def __init__(self, name = None, debug = None):
+
+    def __init__(self, name=None, debug=None):
         self.debug = debug
         self.data = {}
         self.data["name"] = name
@@ -23,13 +24,14 @@ class ReportItem:
 
 
 class Report:
-    def __init__(self, conf, arg, debug = None):
+
+    def __init__(self, conf, arg, debug=None):
         self.arg = arg
         self.conf = conf
         self.debug = debug
         self.reportItem = []
         self.data = {}
-    
+
     def add(self, reportItem):
         self.reportItem.append(reportItem)
 
@@ -50,7 +52,7 @@ class Report:
             return
         msg = MIMEText(self.generate())
         msg['Subject'] = conf.conf["email_subject"]
-        msg['From'] =  conf.conf["email_from"]
+        msg['From'] = conf.conf["email_from"]
         msg['To'] = conf.conf["email_to"]
         s = smtplib.SMTP(conf.conf["email_host"])
         sys.stdout.write("Sending report by email... ")
@@ -70,7 +72,7 @@ class Report:
         except KeyError:
             return 0
 
-    def generate(self, force = None):
+    def generate(self, force=None):
         if force:
             try:
                 del(self.genstr)
@@ -85,7 +87,8 @@ class Report:
         duration = self.data["TimeFinish"] - self.data["TimeStart"]
         hours, remainder = divmod(duration, 3600)
         minutes, seconds = divmod(remainder, 60)
-        sys.stdout.write("Duration: %02d:%02d:%02d (%s - %s)\n" % (hours, minutes, seconds, misc.md(self.data["TimeStart"], delim=''), misc.md(self.data["TimeFinish"], delim='')))
+        sys.stdout.write("Duration: %02d:%02d:%02d (%s - %s)\n" % (hours, minutes, seconds,
+                                                                   misc.md(self.data["TimeStart"], delim=''), misc.md(self.data["TimeFinish"], delim='')))
         if self.debug:
             for i in sorted(self.data):
                 sys.stdout.write("%s: %s\n" % (i, self.data[i]))
@@ -93,7 +96,7 @@ class Report:
             if self.data["DryRun"] == True:
                 sys.stdout.write("DryRun: %s\n" % self.data["DryRun"])
         sys.stdout.write("\nHosts:\n")
-        for i in sorted(self.reportItem, key=lambda code: self.sortrcode(code), reverse = True):
+        for i in sorted(self.reportItem, key=lambda code: self.sortrcode(code), reverse=True):
             try:
                 sys.stdout.write("Code: %d, " % i.data["rcode"])
             except KeyError:
@@ -101,10 +104,12 @@ class Report:
             sys.stdout.write("Host name = %s" % i.data["name"])
             try:
                 if i.data["time_start"]:
-                    duration = int(i.data["time_finish"]) - int(i.data["time_start"])
+                    duration = int(i.data["time_finish"]) - \
+                        int(i.data["time_start"])
                     hours, remainder = divmod(duration, 3600)
-                    minutes, seconds = divmod(remainder, 60) 
-                    sys.stdout.write(", Duration: %02d:%02d:%02d (%s - %s)" % (hours, minutes, seconds, misc.md(i.data["time_start"], delim=''), misc.md(i.data["time_finish"], delim='')))
+                    minutes, seconds = divmod(remainder, 60)
+                    sys.stdout.write(", Duration: %02d:%02d:%02d (%s - %s)" % (hours, minutes, seconds, misc.md(
+                        i.data["time_start"], delim=''), misc.md(i.data["time_finish"], delim='')))
             except KeyError:
                 pass
             sys.stdout.write("\n")
