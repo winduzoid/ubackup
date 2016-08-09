@@ -4,7 +4,6 @@ import sys
 import os
 import subprocess
 import shutil
-import yaml
 
 from ubackup.misc import *
 
@@ -127,16 +126,21 @@ class ItemConfig:
                 self.conf[i] = stsl(dconf[i])
 
 
-def loadDesc():
-    src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
-    desc_file = src_dir + "/confdesc.yaml"
-    with open(desc_file, 'r') as stream:
-        try:
-            desc = yaml.load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return desc
+#def loadDescYaml():
+#    src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
+#    desc_file = src_dir + "/confdesc.yaml"
+#    with open(desc_file, 'r') as stream:
+#        try:
+#            desc = yaml.load(stream)
+#        except yaml.YAMLError as exc:
+#            print(exc)
+#    return desc
 
+def loadDesc(debug=None):
+    src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
+    desc_file = src_dir + "/confdesc.ini"
+    mydesc = ItemConfig(ReadConf(desc_file, debug), "description")
+    return mydesc.conf
 
 def showConfig(conf, arg):
     desc = loadDesc()
