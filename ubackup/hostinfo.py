@@ -8,9 +8,11 @@ import time
 from ubackup.conf import *
 
 # Host object
+
+
 class HostConf:
 
-    def __init__(self, conf, host_line, debug = None):
+    def __init__(self, conf, host_line, debug=None):
 
         hostsplit = host_line.split()
         self.conf = {}
@@ -38,7 +40,7 @@ class HostConf:
             dst_path = conf.conf["dir_default_dest"]
 
         self.conf["dstpath"] = dst_path
-        self.conf["group_name"] = dst_path.replace("/","-")
+        self.conf["group_name"] = dst_path.replace("/", "-")
 
         if dst_path == "/":
             self.conf["dst"] = None
@@ -47,7 +49,8 @@ class HostConf:
             self.conf["group_name"] = ""
         elif re.match(".*/$", dst_path):
             self.conf["dst"] = dst_path
-            self.conf["dir_log"] = os.path.dirname(re.sub(r'(.*)/$', r'\1', dst_path))
+            self.conf["dir_log"] = os.path.dirname(
+                re.sub(r'(.*)/$', r'\1', dst_path))
             self.conf["group_name"] = ""
         else:
             self.conf["dst"] = dst_path + "/" + self.conf["name"]
@@ -56,13 +59,15 @@ class HostConf:
         if debug:
             print "destination path = %s, dir_log = %s, group_name = %s" % (self.conf["dst"], self.conf["dir_log"], self.conf["group_name"])
 
-def fillHostInfo(hostconf, conf, debug = None):
+
+def fillHostInfo(hostconf, conf, debug=None):
 
     if debug:
         print hostconf.conf
 
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
-    custom_config = conf.conf["dir_custom_config"] + "/" + hostconf.conf["name"]
+    custom_config = conf.conf["dir_custom_config"] + \
+        "/" + hostconf.conf["name"]
     run_before = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
     run_after = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
     custom_group_config = ""
@@ -70,11 +75,14 @@ def fillHostInfo(hostconf, conf, debug = None):
     run_group_before = ""
     run_group_after = ""
     if hostconf.conf["group_name"]:
-        custom_group_config = conf.conf["dir_custom_config"] + "/GROUP." + hostconf.conf["group_name"]
-        exclude_group_list = conf.conf["dir_exclude"] + "/GROUP." + hostconf.conf["group_name"]
-        run_group_before = conf.conf["dir_run_before"] + "/GROUP." + hostconf.conf["group_name"]
-        run_group_after = conf.conf["dir_run_after"] + "/GROUP." + hostconf.conf["group_name"]
-
+        custom_group_config = conf.conf[
+            "dir_custom_config"] + "/GROUP." + hostconf.conf["group_name"]
+        exclude_group_list = conf.conf[
+            "dir_exclude"] + "/GROUP." + hostconf.conf["group_name"]
+        run_group_before = conf.conf[
+            "dir_run_before"] + "/GROUP." + hostconf.conf["group_name"]
+        run_group_after = conf.conf["dir_run_after"] + \
+            "/GROUP." + hostconf.conf["group_name"]
 
     if os.path.isfile(exclude_list):
         hostconf.conf["exclude_list"] = exclude_list
@@ -95,15 +103,19 @@ def fillHostInfo(hostconf, conf, debug = None):
 
     # destination dir
     if hostconf.conf["dst"]:
-        hostconf.conf["dst"] = conf.conf["dir_backup"] + "/" + hostconf.conf["dst"]
+        hostconf.conf["dst"] = conf.conf[
+            "dir_backup"] + "/" + hostconf.conf["dst"]
     else:
-        hostconf.conf["dst"] = conf.conf["dir_backup"] + "/" + hostconf.conf["name"]
+        hostconf.conf["dst"] = conf.conf[
+            "dir_backup"] + "/" + hostconf.conf["name"]
 
     # dir log
     if hostconf.conf["dir_log"]:
-        hostconf.conf["dir_log"] = conf.conf["dir_backup"] + "/" + hostconf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
+        hostconf.conf["dir_log"] = conf.conf["dir_backup"] + "/" + \
+            hostconf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
     else:
-        hostconf.conf["dir_log"] = conf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
+        hostconf.conf["dir_log"] = conf.conf[
+            "dir_log"] + "/" + conf.conf["dir_log_name"]
 
     if debug:
         print "Dir log: %s" % hostconf.conf["dir_log"]
@@ -138,4 +150,3 @@ def fillHostInfo(hostconf, conf, debug = None):
         print hostconf.conf
 
     return hostconf
-
