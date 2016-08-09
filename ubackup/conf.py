@@ -93,16 +93,16 @@ class ItemConfig:
         try:
             dconf["dir_log_name"] = self.conf["dir_log_name"]
         except KeyError:
-            dconf["dir_log_name"] = "LOG"
+            dconf["dir_log_name"] = ".log"
 
         dconf["dir_log"] = dconf["dir_backup"] + "/" + dconf["dir_log_name"]
         dconf["file_lock"] = "/tmp/ubackup.lock"
         dconf["file_hosts"] = dconf["dir_etc"] + "/hosts.conf"
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"
         dconf["dir_custom_config"] = dconf["dir_etc"] + "/custom_config/"
-        dconf["dir_custom"] = dconf["dir_etc"] + "/custom/"
+        # dconf["dir_custom"] = dconf["dir_etc"] + "/custom/"
         dconf["dir_default_dest"] = "/"
-        dconf["dir_exec"] = dconf["dir_etc"] + "/exec/"
+        #dconf["dir_exec"] = dconf["dir_etc"] + "/exec/"
         dconf["dir_run_before"] = dconf["dir_etc"] + "/run_before/"
         dconf["dir_run_after"] = dconf["dir_etc"] + "/run_after/"
         dconf["zpool"] = "data"
