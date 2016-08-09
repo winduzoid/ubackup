@@ -1,3 +1,7 @@
+v0.8.1:
+
+  - #19: Implemented description for values in the output of "-s" command line option 
+
 v0.8.0:
 
   - #14: Implemented appropriate group scripts for run_before / run_after 
