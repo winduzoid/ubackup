@@ -1,6 +1,6 @@
-Develop:
+v0.8.1:
 
-  - #19: Implementedy description for values in the output of "-s" command line option 
+  - #19: Implemented description for values in the output of "-s" command line option 
 
 v0.8.0:
 
