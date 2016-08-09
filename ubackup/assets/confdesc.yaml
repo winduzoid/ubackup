@@ -1,0 +1,25 @@
+date_format: Date format
+dir_backup: Path to the directory which storing all data
+dir_custom_config: Path to the directory which storing custom configuration for hosts / groups
+dir_default_dest: Default destination directory inside dir_backup directory. It used if destination path omitted in the hosts.conf file.
+dir_etc: Path to the directory which containing default configuration file ubackup.conf
+dir_exclude: Path to the directory which storing exclude information for hosts/groups
+dir_log: Default directory for store logs
+dir_log_name: Default log directory name
+dir_run_after: Path to the directory which storing run_before scripts for hosts/groups
+dir_run_before: Path to the directory which storing run_after scripts for hosts/groups
+email_from: "\"Email from\" field in the report"
+email_host: SMTP host for sending reports
+email_subject: Email subject in the report
+email_to: Recipient address for report
+file_hosts: "Path to the \"hosts.conf\" file"
+file_lock: Path to the ubackup lock file
+file_log_rcode: Path to the status file on backuped host which contained return code of rsync utility
+report_email: Trigger for send or not report by email
+report_sort_rcode: Sort or not report by return code
+rsync_long_opts: Rsync long options
+rsync_short_opts: Rsync short options
+snapshot_disable: Disable create snapshot for this volumes
+snapshot_labels: Snapshot labels with storing period 
+snapshot_prefix: Prefix for snapshots created by ubackup
+zpool: Pool name for which ubackup will be creating snapshots

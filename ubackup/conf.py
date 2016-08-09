@@ -4,6 +4,7 @@ import sys
 import os
 import subprocess
 import shutil
+import yaml
 
 from ubackup.misc import *
 
@@ -119,9 +120,32 @@ class ItemConfig:
             except KeyError:
                 self.conf[i] = stsl(dconf[i])
 
-def showConfig(conf,arg):
+def loadDesc():
+    src_dir = os.path.dirname(os.path.realpath(__file__)) + "/assets"
+    desc_file = src_dir + "/confdesc.yaml"
+    with open(desc_file, 'r') as stream:
+        try:
+            desc = yaml.load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return desc
+
+def showConfig(conf, arg):
+    desc = loadDesc()
     for i in sorted(conf.conf):
-        print "%s = %s" % (i, conf.conf[i])
+        try:
+            str_desc = desc[i]
+        except KeyError:
+            str_desc = "This is unknown or experimental option"
+        fieldlen = 45
+        mystr = "{:<" + str(fieldlen) + "} {}"
+        #print mystr.format('%s = \n      %s' % (i, conf.conf[i]), str_desc)
+        if len("%s = %s" % (i, conf.conf[i])) > fieldlen:
+            print i + " ="
+            print mystr.format('     %s' % conf.conf[i], str_desc)
+        else:
+            print mystr.format('%s = %s' % (i, conf.conf[i]), str_desc)
+        print
 
     print "\nCalculated values:"
     print "snap_disable: %s" % conf.snap_disable
