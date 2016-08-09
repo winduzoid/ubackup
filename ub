@@ -10,7 +10,7 @@ from ubackup.snapshot import *
 arg = readargs()
 
 if arg.version:
-#    print "ubackup v0.2.3"
+    # print "ubackup v0.2.3"
     showVersion()
     sys.exit(0)
 
@@ -34,7 +34,7 @@ if arg.d:
 
 # showing configuration
 if arg.s:
-    showConfig(conf,arg)
+    showConfig(conf, arg)
 
 # removing snapshot
 if arg.snapshot_rm:

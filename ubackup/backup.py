@@ -10,7 +10,8 @@ from ubackup.hostinfo import *
 from ubackup.misc import *
 from ubackup.report import *
 
-def gatherHostInfo(host, conf, rcode=None, file_log_rcode = None):
+
+def gatherHostInfo(host, conf, rcode=None, file_log_rcode=None):
 
     dir_systeminfo = "/root/system_state"
     hostname = host.conf["hostname"]
@@ -32,15 +33,18 @@ def gatherHostInfo(host, conf, rcode=None, file_log_rcode = None):
         mystr = ssh_string + "echo %d > %s" % (rcode, file_log_rcode)
         subprocess.call(mystr.split())
 
-def getHosts(conf, debug = None):
+
+def getHosts(conf, debug=None):
     hosts = []
     # get host list
-    hosts_lines = os.popen("cat " + conf.conf["file_hosts"] + " | egrep -v '^\s*#' | egrep -v '^$'")
-    
+    hosts_lines = os.popen(
+        "cat " + conf.conf["file_hosts"] + " | egrep -v '^\s*#' | egrep -v '^$'")
+
     # init host objects
     for i in hosts_lines:
         hosts.append(fillHostInfo(HostConf(conf, i, debug), conf, debug))
     return hosts
+
 
 def launchRemote(host, filename, log_filename, conf):
     misc = Misc(conf)
@@ -54,7 +58,8 @@ def launchRemote(host, filename, log_filename, conf):
     logfile.close()
     logfile = open(log_filename, "a+")
     subprocess.call(mystr.split())
-    mystr = ssh_string + "chmod +x /tmp/ubackup-launch; /tmp/ubackup-launch; rm -f /tmp/ubackup-launch"
+    mystr = ssh_string + \
+        "chmod +x /tmp/ubackup-launch; /tmp/ubackup-launch; rm -f /tmp/ubackup-launch"
     subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
     logfile.close()
     print(misc.md() + "done")
@@ -63,7 +68,8 @@ def launchRemote(host, filename, log_filename, conf):
     logfile.write("Done\n")
     logfile.close()
 
-def runBackup(conf, arg, debug = None):
+
+def runBackup(conf, arg, debug=None):
     misc = Misc(conf)
     report = Report(conf, arg, debug)
     report.set("TimeStart", time.time())
@@ -90,24 +96,28 @@ def runBackup(conf, arg, debug = None):
     for host in hosts:
         reportItem = ReportItem(host.conf["name"])
         if arg.r:
-            # if specified exclude flag, and we have host list, and current host is in this list, do not backup it
+            # if specified exclude flag, and we have host list, and current
+            # host is in this list, do not backup it
             if len(arg.host) > 0 and host.conf["name"] in [x.lower() for x in arg.host]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                 continue
-            # if specified exclude flag, and we have host list by path, and current host is in this list, do not backup it
+            # if specified exclude flag, and we have host list by path, and
+            # current host is in this list, do not backup it
             if arg.path and host.conf["dstpath"] in [x.lower() for x in arg.path]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                     print "Host dest path is %s" % host.conf["dstpath"]
                 continue
         if not arg.r:
-            # if not specified exclude flag, and we have host list, and current host is not in list, do not backup it
+            # if not specified exclude flag, and we have host list, and current
+            # host is not in list, do not backup it
             if len(arg.host) > 0 and host.conf["name"] not in [x.lower() for x in arg.host]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
                 continue
-            # if not specified exclude flag, and we have host list by path, and current host is not in list, do not backup it
+            # if not specified exclude flag, and we have host list by path, and
+            # current host is not in list, do not backup it
             if arg.path and host.conf["dstpath"] not in [x.lower() for x in arg.path]:
                 if debug:
                     print "Skipping host %s..." % host.conf["name"]
@@ -131,9 +141,12 @@ def runBackup(conf, arg, debug = None):
             file_log_rcode = conf.conf["file_log_rcode"]
 
         try:
-            mystr = "egrep -q '^" + host.conf["hostname"] + "\s+.*' /root/.ssh/known_hosts || ssh-keyscan " + host.conf["hostname"] + " >> /root/.ssh/known_hosts"
+            mystr = "egrep -q '^" + host.conf["hostname"] + "\s+.*' /root/.ssh/known_hosts || ssh-keyscan " + host.conf[
+                "hostname"] + " >> /root/.ssh/known_hosts"
             subprocess.check_output(mystr, shell=True)
-            mystr = "rsync " + rsync_short_opts + " " + rsync_long_opts + " --exclude-from " + host.conf["exclude_list"] + " " + host.conf["hostname"] + ":" + host.conf["path"] + " " + host.conf["dst"]            
+            mystr = "rsync " + rsync_short_opts + " " + rsync_long_opts + " --exclude-from " + \
+                host.conf["exclude_list"] + " " + host.conf["hostname"] + \
+                    ":" + host.conf["path"] + " " + host.conf["dst"]
             print misc.md()
             print "Host: " + host.conf["name"]
 
@@ -154,22 +167,24 @@ def runBackup(conf, arg, debug = None):
                 print "Use run_after script: " + stsl(host.conf["run_after"])
 
             print "Destination dir: " + host.conf["dst"]
-            log_filename = host.conf["dir_log"] + "/" + host.conf["name"] + ".log"
+            log_filename = host.conf["dir_log"] + \
+                "/" + host.conf["name"] + ".log"
             print "Log file: " + log_filename
             print "Log file rcode: " + file_log_rcode
             print "Use Exclude list: " + host.conf["exclude_list"]
             print "Use command: " + mystr + "\n"
             # If not in "dry run" mode
             if not arg.d:
-                #gatherHostInfo(host)
+                # gatherHostInfo(host)
                 # creating log dir if it not exists
-                subprocess.call("mkdir -p " + host.conf["dir_log"], shell = True)
+                subprocess.call("mkdir -p " + host.conf["dir_log"], shell=True)
 
                 open(log_filename, "w").close()
                 reportItem.set("time_start", time.time())
                 if host.conf["run_before"]:
                     reportItem.set("time_start_run_before", time.time())
-                    rlcode = launchRemote(host, host.conf["run_before"], log_filename, conf)
+                    rlcode = launchRemote(
+                        host, host.conf["run_before"], log_filename, conf)
                     reportItem.set("time_finish_run_before", time.time())
                 logfile = open(log_filename, "a+")
                 misc.logDate(logfile)
@@ -179,8 +194,9 @@ def runBackup(conf, arg, debug = None):
                 print(misc.md() + "Backuping host... ")
                 sys.stdout.flush()
                 reportItem.set("time_start_backup", time.time())
-                subprocess.call("mkdir -p " + host.conf["dst"], shell = True)
-                rcode = subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
+                subprocess.call("mkdir -p " + host.conf["dst"], shell=True)
+                rcode = subprocess.call(
+                    mystr.split(), stdout=logfile, stderr=logfile)
                 reportItem.set("time_finish_backup", time.time())
                 logfile.close()
 
@@ -192,7 +208,8 @@ def runBackup(conf, arg, debug = None):
                 reportItem.set("rcode", rcode)
                 if host.conf["run_after"]:
                     reportItem.set("time_start_run_after", time.time())
-                    rlcode = launchRemote(host, host.conf["run_after"], log_filename, conf)
+                    rlcode = launchRemote(
+                        host, host.conf["run_after"], log_filename, conf)
                     reportItem.set("time_finish_run_after", time.time())
                 reportItem.set("time_finish", time.time())
             print
