@@ -102,20 +102,24 @@ def fillHostInfo(hostconf, conf, debug=None):
             hostconf.conf.update(cconf.conf)
 
     # destination dir
+    dpath = conf.conf["dir_backup"] + "/"
+    try:
+        if re.match("^/.*$", hostconf.conf["dst"]):
+            dpath = ""
+            hostconf.conf["dir_log"] = None
+    except TypeError:
+        pass
     if hostconf.conf["dst"]:
-        hostconf.conf["dst"] = conf.conf[
-            "dir_backup"] + "/" + hostconf.conf["dst"]
+        hostconf.conf["dst"] = dpath + hostconf.conf["dst"]
     else:
-        hostconf.conf["dst"] = conf.conf[
-            "dir_backup"] + "/" + hostconf.conf["name"]
+        hostconf.conf["dst"] = dpath + hostconf.conf["name"]
 
     # dir log
     if hostconf.conf["dir_log"]:
         hostconf.conf["dir_log"] = conf.conf["dir_backup"] + "/" + \
             hostconf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
     else:
-        hostconf.conf["dir_log"] = conf.conf[
-            "dir_log"] + "/" + conf.conf["dir_log_name"]
+        hostconf.conf["dir_log"] = conf.conf["dir_log"]
 
     if debug:
         print "Dir log: %s" % hostconf.conf["dir_log"]
