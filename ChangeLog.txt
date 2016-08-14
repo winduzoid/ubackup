@@ -1,5 +1,7 @@
 Develop:
 
+  - #20: Implemented ability to specify absolute destination path for host
+
 v0.8.2:
 
   - Hotfix release
