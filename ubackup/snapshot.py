@@ -77,7 +77,7 @@ def rotateSnapshot(conf, arg):
 def snapshotList(arg):
     if not arg.snapshot_list:
         return
-    str = "zfs list -t snapshot,filesystem -o space"
+    str = "zfs list -t snapshot -o space"
     subprocess.call(str.split())
     sys.exit(0)
 
