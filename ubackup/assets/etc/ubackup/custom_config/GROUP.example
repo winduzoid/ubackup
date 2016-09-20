@@ -1,0 +1,2 @@
+[custom]
+RSYNC_SHORT_OPTS = -aHAXvz

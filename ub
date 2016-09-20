@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # coding: utf8
 
-from lib.args import *
-from lib.conf import *
-from lib.backup import *
-from lib.snapshot import *
+from ubackup.args import *
+from ubackup.conf import *
+from ubackup.backup import *
+from ubackup.snapshot import *
 
 # processing command line arguments
 arg = readargs()
 
 if arg.version:
-    print "ubackup v0.2.2"
+    # print "ubackup v0.2.3"
+    showVersion()
     sys.exit(0)
 
 # if option "verbose" is switched on, than switching on flag "debug"
@@ -23,11 +24,7 @@ if debug:
     print "Command line arguments: %s" % arg
 
 # reading configuration
-if not arg.install_config:
-    conf = ItemConfig(ReadConf(arg.conf, debug))
-
-# installing the new configuration
-installConfig(arg)
+conf = ItemConfig(ReadConf(arg.conf, debug))
 
 # show snapshot list
 snapshotList(arg)
@@ -37,7 +34,7 @@ if arg.d:
 
 # showing configuration
 if arg.s:
-    showConfig(conf,arg)
+    showConfig(conf, arg)
 
 # removing snapshot
 if arg.snapshot_rm:

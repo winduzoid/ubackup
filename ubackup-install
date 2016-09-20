@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+# coding: utf8
+
+from ubackup.args import *
+from ubackup.conf import *
+
+# processing command line arguments
+arg = readargsInstall()
+
+# path to ub file. By default this file is located nearby ubackup-install
+pathUb = os.path.dirname(os.path.realpath(__file__)) + "/ub"
+
+# installing the new configuration
+installConfig(arg, pathUb)
