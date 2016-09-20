@@ -114,8 +114,7 @@ def fillHostInfo(hostconf, conf, debug=None):
         hostconf.conf["dir_log"] = conf.conf["dir_backup"] + "/" + \
             hostconf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
     else:
-        hostconf.conf["dir_log"] = conf.conf[
-            "dir_log"] + "/" + conf.conf["dir_log_name"]
+        hostconf.conf["dir_log"] = conf.conf["dir_log"] + "/" + conf.conf["dir_log_name"]
 
     if debug:
         print "Dir log: %s" % hostconf.conf["dir_log"]
