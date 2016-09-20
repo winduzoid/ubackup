@@ -2,6 +2,11 @@ Develop:
 
   - #20: Implemented ability to specify absolute destination path for host
 
+v0.8.3:
+
+  - Hotfix release
+  - Issue #22: Fixed problem with incorrect value for default log directory
+
 v0.8.2:
 
   - Hotfix release
