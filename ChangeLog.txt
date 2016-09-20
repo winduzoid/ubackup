@@ -1,7 +1,12 @@
 Develop:
 
-  - #24: "Snapshot list" option shows obly snapshot list
+  - #24: "Snapshot list" option shows only snapshot list
   - #20: Implemented ability to specify absolute destination path for host
+
+v0.8.4:
+
+  - Hotfix release
+  - Issue #25: If zfs filesystem has no mount point than ubackup don't raised exception
 
 v0.8.3:
 
