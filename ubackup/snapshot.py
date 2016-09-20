@@ -56,6 +56,9 @@ def rotateSnapshot(conf, arg):
         # get mount point for the current volume
         dir_volume = subprocess.check_output(
             "/sbin/zfs list " + volume + " | grep -v NAME | awk '{print $5}'", shell=True).strip("\n")
+        # If filesystem has no mountpoint than continue
+        if dir_volume == "-":
+            return
         # get sorted snapshot list for the current volume
         snaplist = sorted(os.listdir(
             dir_volume + "/.zfs/snapshot"), reverse=True)
