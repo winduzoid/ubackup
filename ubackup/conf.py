@@ -94,7 +94,7 @@ class ItemConfig:
         except KeyError:
             dconf["dir_log_name"] = ".log"
 
-        dconf["dir_log"] = dconf["dir_backup"] + "/" + dconf["dir_log_name"]
+        dconf["dir_log"] = dconf["dir_backup"]
         dconf["file_lock"] = "/tmp/ubackup.lock"
         dconf["file_hosts"] = dconf["dir_etc"] + "/hosts.conf"
         dconf["dir_exclude"] = dconf["dir_etc"] + "/excludes/"
