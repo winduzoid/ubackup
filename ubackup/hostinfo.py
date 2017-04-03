@@ -68,7 +68,7 @@ def fillHostInfo(hostconf, conf, debug=None):
     exclude_list = conf.conf["dir_exclude"] + "/" + hostconf.conf["name"]
     custom_config = conf.conf["dir_custom_config"] + \
         "/" + hostconf.conf["name"]
-    run_before = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
+    run_before = conf.conf["dir_run_before"] + "/" + hostconf.conf["name"]
     run_after = conf.conf["dir_run_after"] + "/" + hostconf.conf["name"]
     custom_group_config = ""
     exclude_group_list = ""
