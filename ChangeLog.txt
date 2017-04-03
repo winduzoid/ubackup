@@ -1,3 +1,7 @@
+v0.8.5:
+  - Hotfix release
+  - Issue #30: Fixed error: when specified script run_before, ubackup launched script run_after instead
+
 v0.8.4:
 
   - Hotfix release
