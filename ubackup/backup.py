@@ -239,6 +239,9 @@ def runBackup(conf, arg, debug=None):
                     print(misc.md() + "Failed backup host. Reason: " + stop_reason)
                     logfile.close()
                     reportItem.set("rcode", 1)
+                    logfile = open(log_filename, "a+")
+                    logfile.write("Exit code: %d\n" % 1)
+                    logfile.close()
             print
             sys.stdout.flush()
         except KeyboardInterrupt:
