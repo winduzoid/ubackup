@@ -62,10 +62,10 @@ def launchRemote(host, filename, log_filename, conf):
         "chmod +x /tmp/ubackup-launch; /tmp/ubackup-launch; rm -f /tmp/ubackup-launch"
     rlcode = subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
     logfile.close()
-    print(misc.md() + "finished, exit code: " + rlcode )
+    print(misc.md() + "finished, exit code: " + str(rlcode) )
     logfile = open(log_filename, "a+")
     misc.logDate(logfile)
-    logfile.write("Finished, exit code: " + rlcode + "\n")
+    logfile.write("Finished, exit code: " + str(rlcode) + "\n")
     logfile.close()
     return rlcode;
 
@@ -191,7 +191,7 @@ def runBackup(conf, arg, debug=None):
                     reportItem.set("time_finish_run_before", time.time())
                     if rlcode:
                         flag_stop = True
-                        stop_reason = "Run_before script error: " + rlcode
+                        stop_reason = "Run_before script error: " + str(rlcode)
                 logfile = open(log_filename, "a+")
                 misc.logDate(logfile)
                 logfile.close()
@@ -224,7 +224,7 @@ def runBackup(conf, arg, debug=None):
                         reportItem.set("time_finish_run_after", time.time())
                         if rlcode:
                             flag_stop = True
-                            stop_reason = "Run_after script error: " + rlcode
+                            stop_reason = "Run_after script error: " + str(rlcode)
                     
                 reportItem.set("time_finish", time.time())
 
