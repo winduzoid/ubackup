@@ -60,13 +60,14 @@ def launchRemote(host, filename, log_filename, conf):
     subprocess.call(mystr.split())
     mystr = ssh_string + \
         "chmod +x /tmp/ubackup-launch; /tmp/ubackup-launch; rm -f /tmp/ubackup-launch"
-    subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
+    rlcode = subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
     logfile.close()
-    print(misc.md() + "done")
+    print(misc.md() + "finished, exit code: " + rlcode )
     logfile = open(log_filename, "a+")
     misc.logDate(logfile)
-    logfile.write("Done\n")
+    logfile.write("Finished, exit code: " + rlcode + "\n")
     logfile.close()
+    return rlcode;
 
 
 def runBackup(conf, arg, debug=None):
@@ -94,6 +95,7 @@ def runBackup(conf, arg, debug=None):
         subprocess.call(command.split())
 
     for host in hosts:
+        flag_stop = False
         reportItem = ReportItem(host.conf["name"])
         if arg.r:
             # if specified exclude flag, and we have host list, and current
@@ -181,37 +183,56 @@ def runBackup(conf, arg, debug=None):
 
                 open(log_filename, "w").close()
                 reportItem.set("time_start", time.time())
+
                 if host.conf["run_before"]:
                     reportItem.set("time_start_run_before", time.time())
                     rlcode = launchRemote(
                         host, host.conf["run_before"], log_filename, conf)
                     reportItem.set("time_finish_run_before", time.time())
+                    if rlcode:
+                        flag_stop = True
+                        stop_reason = "Run_before script error: " + rlcode
                 logfile = open(log_filename, "a+")
                 misc.logDate(logfile)
                 logfile.close()
 
-                logfile = open(log_filename, "a+")
-                print(misc.md() + "Backuping host... ")
-                sys.stdout.flush()
                 reportItem.set("time_start_backup", time.time())
-                subprocess.call("mkdir -p " + host.conf["dst"], shell=True)
-                rcode = subprocess.call(
-                    mystr.split(), stdout=logfile, stderr=logfile)
-                reportItem.set("time_finish_backup", time.time())
-                logfile.close()
 
-                gatherHostInfo(host, conf, rcode, file_log_rcode)
-                print(misc.md() + "Done. Exit code: %d" % rcode)
-                logfile = open(log_filename, "a+")
-                logfile.write("Exit code: %d\n" % rcode)
-                logfile.close()
-                reportItem.set("rcode", rcode)
-                if host.conf["run_after"]:
-                    reportItem.set("time_start_run_after", time.time())
-                    rlcode = launchRemote(
-                        host, host.conf["run_after"], log_filename, conf)
-                    reportItem.set("time_finish_run_after", time.time())
+                if not flag_stop:
+                    logfile = open(log_filename, "a+")
+                    print(misc.md() + "Backuping host... ")
+                    sys.stdout.flush()
+                    subprocess.call("mkdir -p " + host.conf["dst"], shell=True)
+                    rcode = subprocess.call(
+                        mystr.split(), stdout=logfile, stderr=logfile)
+                    logfile.close()
+
+                    gatherHostInfo(host, conf, rcode, file_log_rcode)
+                    print(misc.md() + "Done. Exit code: %d" % rcode)
+                    logfile = open(log_filename, "a+")
+                    logfile.write("Exit code: %d\n" % rcode)
+                    logfile.close()
+                    reportItem.set("rcode", rcode)
+
+                reportItem.set("time_finish_backup", time.time())
+
+                if not flag_stop:
+                    if host.conf["run_after"]:
+                        reportItem.set("time_start_run_after", time.time())
+                        rlcode = launchRemote(
+                            host, host.conf["run_after"], log_filename, conf)
+                        reportItem.set("time_finish_run_after", time.time())
+                        if rlcode:
+                            flag_stop = True
+                            stop_reason = "Run_after script error: " + rlcode
+                    
                 reportItem.set("time_finish", time.time())
+
+                if flag_stop:
+                    logfile = open(log_filename, "a+")
+                    print(misc.md() + "Failed backup host. Reason: " + stop_reason)
+                    logfile.close()
+                    reportItem.set("rcode", "1")
             print
             sys.stdout.flush()
         except KeyboardInterrupt:
