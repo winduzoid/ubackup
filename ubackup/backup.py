@@ -58,9 +58,9 @@ def launchRemote(host, filename, log_filename, conf):
     logfile.close()
     logfile = open(log_filename, "a+")
     subprocess.call(mystr.split())
-    mystr = ssh_string + \
-        "chmod +x /tmp/ubackup-launch; /tmp/ubackup-launch; rm -f /tmp/ubackup-launch"
-    rlcode = subprocess.call(mystr.split(), stdout=logfile, stderr=logfile)
+    subprocess.call(ssh_string + "chmod +x /tmp/ubackup-launch".split(), stdout=logfile, stderr=logfile)
+    rlcode = subprocess.call(ssh_string + "/tmp/ubackup-launch".split(), stdout=logfile, stderr=logfile)
+    subprocess.call(ssh_string + "rm -f /tmp/ubackup-launch".split(), stdout=logfile, stderr=logfile)
     logfile.close()
     print(misc.md() + "finished, exit code: " + str(rlcode) )
     logfile = open(log_filename, "a+")
@@ -208,7 +208,7 @@ def runBackup(conf, arg, debug=None):
                     logfile.close()
 
                     gatherHostInfo(host, conf, rcode, file_log_rcode)
-                    print(misc.md() + "Done. Exit code: %d" % rcode)
+                    print(misc.md() + "Finished. Exit code: %d" % rcode)
                     logfile = open(log_filename, "a+")
                     logfile.write("Exit code: %d\n" % rcode)
                     logfile.close()
