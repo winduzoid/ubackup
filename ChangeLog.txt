@@ -1,6 +1,9 @@
 Develop:
-  - #24: "Snapshot list" option shows only snapshot list
-  - #20: Implemented ability to specify absolute destination path for host
+  - Issue #24: "Snapshot list" option shows only snapshot list
+  - Issue #20: Implemented ability to specify absolute destination path for host
+
+v0.8.6:
+  - Issue #29: Implemented reaction on exit codes from scripts ("before" and "after")
 
 v0.8.5:
   - Hotfix release
