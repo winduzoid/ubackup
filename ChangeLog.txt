@@ -1,3 +1,6 @@
+v0.8.6:
+  - Issue #29: Implemented reaction on exit codes from scripts ("before" and "after")
+
 v0.8.5:
   - Hotfix release
   - Issue #30: Fixed error: when specified script run_before, ubackup launched script run_after instead
