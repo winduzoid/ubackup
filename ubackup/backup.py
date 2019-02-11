@@ -48,6 +48,11 @@ def getHosts(conf, debug=None):
 def launchRemote(host, filename, log_filename, conf):
     fsize = os.path.getsize(filename)
     if not fsize:
+        print(misc.md() + "Don't launch script %s - it has zero size" % stsl(filename))
+        logfile = open(log_filename, "a+")
+        misc.logDate(logfile)
+        logfile.write(stsl("Don't launch script " + filename + " - it has zero size\n"))
+        logfile.close()
         return 0
     misc = Misc(conf)
     hostname = host.conf["hostname"]
