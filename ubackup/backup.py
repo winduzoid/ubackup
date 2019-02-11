@@ -46,6 +46,9 @@ def getHosts(conf, debug=None):
 
 
 def launchRemote(host, filename, log_filename, conf):
+    fsize = os.path.getsize(filename)
+    if not fsize:
+        return 0
     misc = Misc(conf)
     hostname = host.conf["hostname"]
     ssh_string = "ssh " + hostname + " "
@@ -72,7 +75,7 @@ def launchRemote(host, filename, log_filename, conf):
     misc.logDate(logfile)
     logfile.write("Finished, exit code: " + str(rlcode) + "\n")
     logfile.close()
-    return rlcode;
+    return rlcode
 
 
 def runBackup(conf, arg, debug=None):
