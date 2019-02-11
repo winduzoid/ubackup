@@ -33,7 +33,6 @@ def gatherHostInfo(host, conf, rcode=None, file_log_rcode=None):
         mystr = ssh_string + "echo %d > %s" % (rcode, file_log_rcode)
         subprocess.call(mystr.split())
 
-
 def getHosts(conf, debug=None):
     hosts = []
     # get host list
@@ -239,9 +238,7 @@ def runBackup(conf, arg, debug=None):
                     print(misc.md() + "Failed backup host. Reason: " + stop_reason)
                     logfile.close()
                     reportItem.set("rcode", 1)
-                    logfile = open(log_filename, "a+")
-                    logfile.write("Exit code: %d\n" % 1)
-                    logfile.close()
+                    gatherHostInfo(host, conf, 1, file_log_rcode)
             print
             sys.stdout.flush()
         except KeyboardInterrupt:
