@@ -46,6 +46,7 @@ def getHosts(conf, debug=None):
 
 
 def launchRemote(host, filename, log_filename, conf):
+    misc = Misc(conf)
     fsize = os.path.getsize(filename)
     if not fsize:
         print(misc.md() + "Don't launch script %s - it has zero size" % stsl(filename))
@@ -54,7 +55,6 @@ def launchRemote(host, filename, log_filename, conf):
         logfile.write(stsl("Don't launch script " + filename + " - it has zero size\n"))
         logfile.close()
         return 0
-    misc = Misc(conf)
     hostname = host.conf["hostname"]
     ssh_string = "ssh " + hostname + " "
     mystr = "scp -q " + filename + " " + hostname + ":/tmp/ubackup-launch"
